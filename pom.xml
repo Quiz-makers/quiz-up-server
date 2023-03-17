@@ -12,6 +12,7 @@
 
     <modules>
         <module>services/auth</module>
+        <module>services/quiz-service</module>
     </modules>
 
     <properties>
