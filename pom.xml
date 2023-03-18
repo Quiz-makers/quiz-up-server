@@ -11,7 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <modules>
-        <module>services/auth</module>
+        <module>auth</module>
+        <module>db</module>
     </modules>
 
     <properties>
