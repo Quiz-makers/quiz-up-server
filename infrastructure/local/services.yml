@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  auth-service:
+    image: ${GROUP_ID}/auth.service:${SERVICE_VERSION:-latest}
+    ports:
+      - "8190:8190"
+    user: root
+    depends_on:
+      - postgres_db
+    environment:
+      - "SERVER_PORT=8190"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=postgres"
+    networks:
+      - ${GLOBAL_NETWORK:-services}
+  quiz-service-1:
+    image: ${GROUP_ID}/quiz.service:${SERVICE_VERSION:-latest}
+    ports:
+      - "8290:8290"
+    user: root
+    depends_on:
+      - postgres_db
+      - auth-service
+#    entrypoint: ['check-auth-server-started.sh']
+    environment:
+      - "SERVER_PORT=8290"
+#      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
+#      - "SPRING_DATASOURCE_USERNAME=postgres"
+#      - "SPRING_DATASOURCE_PASSWORD=postgres"
+    volumes:
+      - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
+    networks:
+      - ${GLOBAL_NETWORK:-services}

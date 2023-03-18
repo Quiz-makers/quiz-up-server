@@ -149,3 +149,8 @@
 # Prometheus
 ######################
 **/grafana
+
+######################
+# ignore local enviroment containers data
+######################
+infrastructure/local/containers-data/
