@@ -1,0 +1,4 @@
+role_id,name
+1,ADMIN_ROLE
+2,MODERATOR_ROLE
+3,USER_ROLE
