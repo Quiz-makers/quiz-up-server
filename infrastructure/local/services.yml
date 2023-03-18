@@ -9,7 +9,7 @@ services:
       - postgres_db
     environment:
       - "SERVER_PORT=8190"
-      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5532/test_db"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
       - "SPRING_DATASOURCE_USERNAME=postgres"
       - "SPRING_DATASOURCE_PASSWORD=postgres"
     networks:
@@ -25,7 +25,7 @@ services:
 #    entrypoint: ['check-auth-server-started.sh']
     environment:
       - "SERVER_PORT=8290"
-#      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5532/test_db"
+#      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
 #      - "SPRING_DATASOURCE_USERNAME=postgres"
 #      - "SPRING_DATASOURCE_PASSWORD=postgres"
     volumes:
