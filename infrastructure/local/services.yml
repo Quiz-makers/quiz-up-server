@@ -6,7 +6,8 @@ services:
       - "8190:8190"
     user: root
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
     environment:
       - "SERVER_PORT=8190"
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
@@ -20,8 +21,8 @@ services:
       - "8290:8290"
     user: root
     depends_on:
-      - postgres_db
-      - auth-service
+      postgres_db:
+        condition: service_healthy
 #    entrypoint: ['check-auth-server-started.sh']
     environment:
       - "SERVER_PORT=8290"

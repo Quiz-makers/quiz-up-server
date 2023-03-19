@@ -35,7 +35,6 @@ If step 2 proceeded, after new start docker will create new resources (database 
 $ docker-compose -f common.yml -f postgres_database.yml up
 ```
 
-## HOW TO RUN LIQUIBASE 'UPDATE' ACTION MANUALLY
-```
-$ docker-compose -f common.yml -f liquibase.yml up
-```
+## HOW TO RUN ANY LIQUIBASE ACTION MANUALLY
+
+Use already set up Maven liquibase plugin (preferred way: IntelliJ IDE) to perform any action on Liquibase.

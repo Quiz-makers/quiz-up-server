@@ -4,7 +4,8 @@ services:
     image: liquibase/liquibase:${LIQUIBASE_VERSION:-latest}
     container_name: liquibase
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
     # Run the liquibase update
     command: ['update']
     environment:
