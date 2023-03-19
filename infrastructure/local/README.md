@@ -8,7 +8,7 @@
 $ mvn clean install -DskipTests
 ```
 
-3. Open this folder in terminal and type
+3. Go to 'infrastructure/local' (this directory) in terminal and type
 ```
 $ docker-compose up
 ```
@@ -28,7 +28,7 @@ $ docker-compose down
 
 2. [OPTIONAL] Remove 'containers-data' folder from 'infrastructure/local' directory.
 
-If deleted, docker will create new containers-data, if not, will use existing ones.
+If step 2 proceeded, after new start docker will create new resources (database e.t.c), if not, will use existing ones.
 
 ## HOW TO START ONLY PostgresDB (without microservices)
 ```
