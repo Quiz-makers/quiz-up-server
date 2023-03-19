@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 services:
   postgres_db:
     image: postgres:${POSTGRES_VERSION:-latest}
@@ -7,6 +7,11 @@ services:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=postgres"
       - "POSTGRES_DB=quiz_db"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - '5432:5432'
     volumes:

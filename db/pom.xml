@@ -10,13 +10,9 @@
     </parent>
 
     <artifactId>db</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>db</name>
     <description>db</description>
-
-    <properties>
-        <liquibase-version>4.20.0</liquibase-version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -33,7 +29,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase-version}</version>
                 <configuration>
-                    <propertyFile>src/main/resources/application.properties</propertyFile>
+                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
                 </configuration>
                 <dependencies>
                     <dependency>
