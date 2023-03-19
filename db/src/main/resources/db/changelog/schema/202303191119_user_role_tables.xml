@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="202303191119-0" author="korbecki">
+        <createTable tableName="role">
+            <column name="role_id" type="smallserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(15)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="202303191119-1" author="korbecki">
+        <createTable tableName="system_user">
+            <column name="user_id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="password" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email_accepted" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202303191119-2" author="korbecki">
+        <createTable tableName="user_role">
+            <column name="role_id" type="smallint">
+                <constraints primaryKey="true" foreignKeyName="user_role_role_fk" references="role(role_id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" foreignKeyName="user_role_user_fk" references="system_user(user_id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202303191119-3" author="korbecki">
+        <loadData file="data/role.csv" tableName="role" relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>
