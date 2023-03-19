@@ -22,4 +22,8 @@ public class UserInfoService {
         userInfo.setDefaultRole();
         return repository.save(userInfo);
     }
+
+    public boolean doEmailExists(String email) {
+        return repository.existsByEmail(email);
+    }
 }
