@@ -14,6 +14,7 @@
         <module>auth</module>
         <module>quiz-service</module>
         <module>db</module>
+        <module>gateway</module>
     </modules>
 
     <properties>
@@ -29,6 +30,9 @@
         <liquibase-version>4.19.0</liquibase-version>
         <org.aspectj.version>1.9.19</org.aspectj.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <open.api.version>2.0.4</open.api.version>
+        <spring-cloud.version>2022.0.1</spring-cloud.version>
+        <slf4j.version>2.0.5</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -88,11 +92,6 @@
                 <artifactId>spring-security-test</artifactId>
                 <version>${spring.framework.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>1.6.15</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
