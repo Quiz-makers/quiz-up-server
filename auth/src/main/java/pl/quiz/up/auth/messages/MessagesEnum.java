@@ -1,11 +1,13 @@
-package pl.quiz.up.auth.utils;
+package pl.quiz.up.auth.messages;
 
 import lombok.Getter;
 
 public enum MessagesEnum {
     BAD_EMAIL(removeBracelets(Messages.BAD_EMAIL)),
     EMPTY_FIELD(removeBracelets(Messages.EMPTY_FIELD)),
-    EXISTS_EMAIL(removeBracelets(Messages.EXISTS_EMAIL));
+    EXISTS_EMAIL(removeBracelets(Messages.EXISTS_EMAIL)),
+    EXISTS_USER_NAME(removeBracelets(Messages.EXISTS_USER_NAME)),
+    INVALID_EMAIL_OR_PASSWORD(removeBracelets(Messages.INVALID_EMAIL_OR_PASSWORD));
 
     @Getter
     private final String code;

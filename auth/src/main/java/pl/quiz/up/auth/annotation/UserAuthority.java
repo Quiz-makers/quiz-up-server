@@ -1,4 +1,4 @@
-package pl.quiz.up.auth.utils.annotation;
+package pl.quiz.up.auth.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.security.access.prepost.PreAuthorize;

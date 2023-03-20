@@ -13,6 +13,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import pl.quiz.up.auth.mapper.DTOModelMapper;
@@ -64,5 +65,10 @@ public class WebMvcConfig extends AcceptHeaderLocaleResolver implements WebMvcCo
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("*");
     }
 }

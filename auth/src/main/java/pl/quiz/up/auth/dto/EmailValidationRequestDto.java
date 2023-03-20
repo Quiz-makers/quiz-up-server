@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import pl.quiz.up.auth.utils.Messages;
+import pl.quiz.up.auth.messages.Messages;
 
 @FieldNameConstants
 @Data

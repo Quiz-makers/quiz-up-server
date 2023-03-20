@@ -1,7 +1,9 @@
 package pl.quiz.up.auth.controller;
 
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import org.springframework.context.MessageSource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +19,21 @@ import pl.quiz.up.auth.entity.UserInfo;
 import pl.quiz.up.auth.mapper.DTO;
 import pl.quiz.up.auth.service.JwtService;
 import pl.quiz.up.auth.service.UserInfoService;
-import pl.quiz.up.auth.utils.Messages;
-import pl.quiz.up.auth.utils.MessagesEnum;
-import pl.quiz.up.auth.utils.Translator;
+import pl.quiz.up.auth.messages.MessagesEnum;
+import pl.quiz.up.auth.messages.Translator;
 
 import java.util.Set;
 
-@RestController("/auth")
+@RestController
+@RequiredArgsConstructor
 public class AuthController {
 
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserInfoService userInfoService;
-    private final MessageSource messageSource;
 
-    public AuthController(JwtService jwtService, AuthenticationManager authenticationManager, UserInfoService userInfoService, MessageSource messageSource) {
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.userInfoService = userInfoService;
-        this.messageSource = messageSource;
-    }
 
+    @ApiResponse(headers = @Header(name = HttpHeaders.AUTHORIZATION))
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
@@ -45,7 +41,7 @@ public class AuthController {
         if (authentication.isAuthenticated()) {
             return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtService.generateToken(authRequest.getEmail())).build();
         } else {
-            throw new UsernameNotFoundException("invalid user request !");
+            throw new UsernameNotFoundException(Translator.translate(MessagesEnum.INVALID_EMAIL_OR_PASSWORD));
         }
     }
 
@@ -60,7 +56,19 @@ public class AuthController {
         if (userInfoService.doEmailExists(dto.getEmail())) {
             String fieldName = EmailValidationRequestDto.Fields.email;
             ErrorDto errorDto = new ErrorDto(fieldName, Translator.translate(MessagesEnum.EXISTS_EMAIL));
-            ValidationErrorDto body = new ValidationErrorDto(Set.of(errorDto));
+            ValidationErrorsDto body = new ValidationErrorsDto(Set.of(errorDto));
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/register/username/validate")
+    public ResponseEntity<?> validateEmail(@RequestBody UserNameValidationRequestDto dto) {
+        if (userInfoService.doUserNameExists(dto.getUserName())) {
+            String fieldName = UserNameValidationRequestDto.Fields.userName;
+            ErrorDto errorDto = new ErrorDto(fieldName, Translator.translate(MessagesEnum.EXISTS_USER_NAME));
+            ValidationErrorsDto body = new ValidationErrorsDto(Set.of(errorDto));
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }

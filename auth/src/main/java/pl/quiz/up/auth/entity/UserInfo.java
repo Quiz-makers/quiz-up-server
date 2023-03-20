@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
+@FieldNameConstants
 @NoArgsConstructor
 @Table(name = "system_user")
 @Entity(name = "system_user")
@@ -19,10 +21,20 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column(name = Fields.name)
     private String name;
+
+    @Column(name = Fields.surname)
     private String surname;
+
+    @Column(name = Fields.email)
     private String email;
+
+    @Column(name = Fields.password)
     private String password;
+
+    @Column(name = "user_name")
     private String userName;
 
     @ManyToMany(fetch = FetchType.EAGER)
