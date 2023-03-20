@@ -1,6 +1,8 @@
 server:
   port: 8080
 spring:
+  banner:
+    location: banner.txt
   cloud:
     gateway:
       routes:
