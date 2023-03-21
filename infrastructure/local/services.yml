@@ -1,9 +1,7 @@
 version: '3.9'
 services:
   auth-service:
-    image: ${GROUP_ID}/auth.service:${SERVICE_VERSION:-latest}
-    ports:
-      - "8190:8190"
+    image: ${GROUP_ID}/auth.service:${AUTH_SERVICE_VERSION:-latest}
     user: root
     depends_on:
       postgres_db:
@@ -16,9 +14,7 @@ services:
     networks:
       - ${GLOBAL_NETWORK:-services}
   quiz-service-1:
-    image: ${GROUP_ID}/quiz.service:${SERVICE_VERSION:-latest}
-    ports:
-      - "8290:8290"
+    image: ${GROUP_ID}/quiz.service:${QUIZ_SERVICE_VERSION:-latest}
     user: root
     depends_on:
       postgres_db:
@@ -31,5 +27,23 @@ services:
 #      - "SPRING_DATASOURCE_PASSWORD=postgres"
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
+    networks:
+      - ${GLOBAL_NETWORK:-services}
+  gateway-service-1:
+    image: ${GROUP_ID}/gateway.service:${GATEWAY_SERVICE_VERSION:-latest}
+    ports:
+      - "8081:8081"
+    depends_on:
+      - auth-service
+      - quiz-service-1
+    volumes:
+      - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
+    user: root
+    environment:
+      - "SERVER_PORT=8081"
+      - "AUTH-SERVICE_HOST=auth-service"
+      - "AUTH-SERVICE_PORT=8190"
+      - "QUIZ-SERVICE-1_HOST=quiz-service-1"
+      - "QUIZ-SERVICE-1_PORT=8290"
     networks:
       - ${GLOBAL_NETWORK:-services}
