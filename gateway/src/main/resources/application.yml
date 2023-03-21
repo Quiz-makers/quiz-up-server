@@ -1,5 +1,18 @@
 server:
-  port: 8080
+  port: 8081
+
+auth-service:
+  host: localhost
+  port: 8190
+
+quiz-service-1:
+  host: localhost
+  port: 8290
+
+open-api:
+  host: localhost
+  port: ${server.port}
+
 spring:
   banner:
     location: banner.txt
@@ -7,11 +20,11 @@ spring:
     gateway:
       routes:
         - id: auth
-          uri: http://localhost:8081/
+          uri: http://${auth-service.host}:${auth-service.port}/
           predicates:
             - Path=/auth/**
         - id: openAPI
-          uri: http://localhost:${server.port}/
+          uri: http://${open-api.host}:${open-api.port}/
           predicates:
             - Path=/v3/api-docs/**
           filters:
@@ -29,4 +42,3 @@ springdoc:
         name: API Gateway Service
       - url: /auth/v3/api-docs
         name: Authorization Service
-
