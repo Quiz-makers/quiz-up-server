@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="202303232030-0" author="mkrolczyk">
+        <createTable tableName="quiz_category">
+            <column name="category_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="thumbnail" type="BYTEA" defaultValue="NULL">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202303232030-1" author="mkrolczyk" >
+        <createTable tableName="quiz">
+            <column name="quiz_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(75)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meta_title" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="summary" type="VARCHAR(400)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="type" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slug" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="public_available" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="published_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quiz_time" type="INTERVAL">
+                <constraints nullable="true"/>
+            </column>
+            <column name="starts_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ends_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_quiz_owner"
+                baseTableName="quiz"
+                baseColumnNames="owner_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_quiz_category"
+                baseTableName="quiz"
+                baseColumnNames="category_id"
+                referencedTableName="quiz_category"
+                referencedColumnNames="category_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <createIndex indexName="uq_slug" tableName="quiz" unique="true">
+            <column name="slug"/>
+        </createIndex>
+
+        <createIndex indexName="idx_quiz_owner" tableName="quiz">
+            <column name="owner_id"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet id="202303232030-2" author="mkrolczyk">
+        <createTable tableName="quiz_meta">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quiz_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="metadata" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_meta_quiz"
+                baseTableName="quiz_meta"
+                baseColumnNames="quiz_id"
+                referencedTableName="quiz"
+                referencedColumnNames="quiz_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addUniqueConstraint constraintName="unique_quiz_id_key" tableName="quiz_meta" columnNames="quiz_id, key"/>
+
+    </changeSet>
+
+    <changeSet id="202303232030-3" author="mkrolczyk">
+        <createTable tableName="quiz_question">
+            <column name="question_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quiz_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="question" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="difficulty_level" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="visible_in_quiz" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_question_quiz"
+                baseTableName="quiz_question"
+                baseColumnNames="quiz_id"
+                referencedTableName="quiz"
+                referencedColumnNames="quiz_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+    <changeSet id="202303232030-4" author="mkrolczyk">
+        <createTable tableName="quiz_answer">
+            <column name="answer_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quiz_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="answer" type="TEXT">
+                <constraints nullable="true" />
+            </column>
+            <column name="correct" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_answer_quiz"
+                baseTableName="quiz_answer"
+                baseColumnNames="quiz_id"
+                referencedTableName="quiz"
+                referencedColumnNames="quiz_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_answer_question"
+                baseColumnNames="question_id"
+                baseTableName="quiz_answer"
+                referencedColumnNames="question_id"
+                referencedTableName="quiz_question"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+    <changeSet id="202303232030-5" author="mkrolczyk">
+        <createIndex indexName="idx_answer_quiz" tableName="quiz_answer">
+            <column name="quiz_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303232030-6" author="mkrolczyk">
+        <createIndex indexName="idx_answer_question" tableName="quiz_answer">
+            <column name="question_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303232030-7" author="mkrolczyk">
+        <createTable tableName="take">
+            <column name="take_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quiz_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="take_status" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score_result" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comments" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="started_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="finished_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_take_user"
+                baseTableName="take"
+                baseColumnNames="user_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_take_quiz"
+                baseTableName="take"
+                baseColumnNames="quiz_id"
+                referencedTableName="quiz"
+                referencedColumnNames="quiz_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+    <changeSet id="202303232030-8" author="mkrolczyk">
+        <createIndex indexName="idx_take_user" tableName="take">
+            <column name="user_id" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303232030-9" author="mkrolczyk">
+        <createIndex indexName="idx_take_quiz" tableName="take">
+            <column name="quiz_id" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303232030-10" author="mkrolczyk">
+        <createTable tableName="take_answer">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="take_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="answer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open_text_answer" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="most_actual_answer" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_answer_take"
+                baseTableName="take_answer"
+                baseColumnNames="take_id"
+                referencedTableName="take"
+                referencedColumnNames="take_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_answer_question"
+                baseTableName="take_answer"
+                baseColumnNames="question_id"
+                referencedTableName="quiz_question"
+                referencedColumnNames="question_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_answer_answer"
+                baseTableName="take_answer"
+                baseColumnNames="answer_id"
+                referencedTableName="quiz_answer"
+                referencedColumnNames="answer_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+    <changeSet id="202303232030-11" author="mkrolczyk">
+        <createIndex indexName="idx_answer_take" tableName="take_answer">
+            <column name="take_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303232030-12" author="mkrolczyk">
+        <createIndex indexName="idx_tanswer_question" tableName="take_answer">
+            <column name="question_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303232030-13" author="mkrolczyk">
+        <createIndex indexName="idx_tanswer_answer" tableName="take_answer">
+            <column name="answer_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
