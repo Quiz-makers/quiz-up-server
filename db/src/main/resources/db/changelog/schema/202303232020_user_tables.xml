@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="202303191119-0" author="korbecki">
+        <createTable tableName="role">
+            <column name="role_id" type="smallserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(15)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202303191119-1" author="mkrolczyk">
+        <createTable tableName="system_user">
+            <column name="user_id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email_accepted" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(15)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="user_intro" type="VARCHAR(300)" defaultValue="">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_descr" type="VARCHAR(1000)" defaultValue="">
+                <constraints nullable="true"/>
+            </column>
+            <column name="can_create_quizzes" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registered_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_login" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202303191119-2" author="mkrolczyk">
+        <createIndex indexName="uq_phone" tableName="system_user">
+            <column name="phone_number">
+                <constraints unique="true"/>
+            </column>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303191119-3" author="mkrolczyk">
+        <createIndex indexName="uq_email" tableName="system_user">
+            <column name="email">
+                <constraints unique="true"/>
+            </column>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="202303191119-4" author="korbecki">
+        <createTable tableName="user_role">
+            <column name="role_id" type="smallint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="user_role_role_fk"
+                baseTableName="user_role"
+                baseColumnNames="role_id"
+                referencedTableName="role"
+                referencedColumnNames="role_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="user_role_user_fk"
+                baseTableName="user_role"
+                baseColumnNames="user_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+    <changeSet id="202303191119-5" author="korbecki">
+        <loadData file="data/role.csv" tableName="role" relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>
