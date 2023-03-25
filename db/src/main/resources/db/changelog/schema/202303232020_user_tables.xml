@@ -12,6 +12,9 @@
             <column name="name" type="varchar(15)">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -50,7 +53,7 @@
             <column name="can_create_quizzes" type="BOOLEAN" defaultValueBoolean="true">
                 <constraints nullable="false"/>
             </column>
-            <column name="registered_at" type="TIMESTAMP">
+            <column name="registered_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
             <column name="last_login" type="TIMESTAMP">
