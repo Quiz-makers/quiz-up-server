@@ -5,73 +5,73 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="202303232030-0" author="mkrolczyk">
-        <createTable tableName="quiz_category">
-            <column name="category_id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="quiz_category" remarks="Used to store quiz categories">
+            <column name="category_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the category">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="category" type="VARCHAR(50)">
+            <column name="category" type="VARCHAR(50)" remarks="Category name">
                 <constraints nullable="false"/>
             </column>
-            <column name="thumbnail" type="BYTEA" defaultValue="NULL">
+            <column name="thumbnail" type="BYTEA" defaultValue="NULL" remarks="Thumbnail for category">
                 <constraints nullable="true"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the category is created">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
     <changeSet id="202303232030-1" author="mkrolczyk" >
-        <createTable tableName="quiz">
-            <column name="quiz_id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="quiz" remarks="Used to store the quiz data">
+            <column name="quiz_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="owner_id" type="BIGINT">
+            <column name="owner_id" type="BIGINT" remarks="The owner id to identify the quiz creator">
                 <constraints nullable="false"/>
             </column>
-            <column name="title" type="VARCHAR(75)">
+            <column name="title" type="VARCHAR(75)" remarks="The quiz title">
                 <constraints nullable="false"/>
             </column>
-            <column name="meta_title" type="VARCHAR(100)">
+            <column name="meta_title" type="VARCHAR(100)" remarks="The meta title to be used for browser title and SEO">
                 <constraints nullable="true"/>
             </column>
-            <column name="summary" type="VARCHAR(400)">
+            <column name="summary" type="VARCHAR(400)" remarks="The summary section to mention the key highlights of quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="TEXT">
+            <column name="description" type="TEXT" remarks="Section for a detailed description of the quiz">
                 <constraints nullable="true"/>
             </column>
-            <column name="type" type="SMALLINT" defaultValue="0">
+            <column name="type" type="SMALLINT" defaultValue="0" remarks="The type to distinguish between the test and the quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="category_id" type="BIGINT">
+            <column name="category_id" type="BIGINT" remarks="The category of the quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="score" type="SMALLINT" defaultValue="0">
+            <column name="score" type="SMALLINT" defaultValue="0" remarks="The total score of the quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="slug" type="VARCHAR(100)">
+            <column name="slug" type="VARCHAR(100)" remarks="The slug (unique identifier) to form the URL">
                 <constraints nullable="false"/>
             </column>
-            <column name="public_available" type="BOOLEAN" defaultValueBoolean="false">
+            <column name="public_available" type="BOOLEAN" defaultValueBoolean="false" remarks="The identifier whether test/quiz is publicly available">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the test/quiz is created">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="TIMESTAMP">
+            <column name="updated_at" type="TIMESTAMP" remarks="Stores the date and time at which the test/quiz is updated">
                 <constraints nullable="true"/>
             </column>
-            <column name="public_from" type="TIMESTAMP">
+            <column name="public_from" type="TIMESTAMP" remarks="Stores the date and time from which the test/quiz is publicly available">
                 <constraints nullable="true"/>
             </column>
-            <column name="quiz_time" type="INTERVAL">
+            <column name="quiz_time" type="INTERVAL" remarks="Total time for quiz. NULL if there is no time limit">
                 <constraints nullable="true"/>
             </column>
-            <column name="starts_at" type="TIMESTAMP">
+            <column name="starts_at" type="TIMESTAMP" remarks="Stores the date and time at which the test/quiz starts and opens up for takes">
                 <constraints nullable="true"/>
             </column>
-            <column name="ends_at" type="TIMESTAMP">
+            <column name="ends_at" type="TIMESTAMP" remarks="Stores the date and time at which the test/quiz closes for takes">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -105,20 +105,20 @@
     </changeSet>
 
     <changeSet id="202303232030-2" author="mkrolczyk">
-        <createTable tableName="quiz_meta">
-            <column name="id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="quiz_meta" remarks="Used to store the quiz metadata">
+            <column name="id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz meta">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="quiz_id" type="BIGINT">
+            <column name="quiz_id" type="BIGINT" remarks="The quiz id to identify the parent test/quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="key" type="VARCHAR(50)">
+            <column name="key" type="VARCHAR(50)" remarks="The key identifying the meta">
                 <constraints nullable="false"/>
             </column>
-            <column name="metadata" type="TEXT">
+            <column name="metadata" type="TEXT" remarks="Used to store the quiz metadata">
                 <constraints nullable="true"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the quiz metadata is created">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -137,32 +137,32 @@
     </changeSet>
 
     <changeSet id="202303232030-3" author="mkrolczyk">
-        <createTable tableName="quiz_question">
-            <column name="question_id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="quiz_question" remarks="Used to store the questions related to tests and quizzes">
+            <column name="question_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz question">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="quiz_id" type="BIGINT">
+            <column name="quiz_id" type="BIGINT" remarks="The quiz id to identify the parent test/quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(50)">
+            <column name="type" type="VARCHAR(50)" remarks="The type of question. The type can be a single choice(Yes/No), multiple-choice or select. We can also have type as input and textarea in case the quiz result need manual checks">
                 <constraints nullable="false" />
             </column>
-            <column name="question" type="TEXT">
+            <column name="question" type="TEXT" remarks="Used to store the question">
                 <constraints nullable="false"/>
             </column>
-            <column name="score" type="SMALLINT" defaultValue="0">
+            <column name="score" type="SMALLINT" defaultValue="0" remarks="The score of an individual question">
                 <constraints nullable="false"/>
             </column>
-            <column name="difficulty_level" type="SMALLINT" defaultValue="0">
+            <column name="difficulty_level" type="SMALLINT" defaultValue="0" remarks="Used to identify whether the question is easy, medium, or difficult">
                 <constraints nullable="false"/>
             </column>
-            <column name="visible_in_quiz" type="BOOLEAN" defaultValueBoolean="true">
+            <column name="visible_in_quiz" type="BOOLEAN" defaultValueBoolean="true" remarks="Flag to identify whether the question is visible in quiz (a quiz can have lots of questions, but only selective questions may remain visible for users)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the question is created">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="TIMESTAMP">
+            <column name="updated_at" type="TIMESTAMP" remarks="Stores the date and time at which the question was updated">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -179,29 +179,29 @@
     </changeSet>
 
     <changeSet id="202303232030-4" author="mkrolczyk">
-        <createTable tableName="quiz_answer">
-            <column name="answer_id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="quiz_answer" remarks="Used to store the answers related to tests and quizzes">
+            <column name="answer_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz answer">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="quiz_id" type="BIGINT">
+            <column name="quiz_id" type="BIGINT" remarks="The quiz id to identify the parent test/quiz">
                 <constraints nullable="false" />
             </column>
-            <column name="question_id" type="BIGINT">
+            <column name="question_id" type="BIGINT" remarks="The question id to identify the parent question">
                 <constraints nullable="false" />
             </column>
-            <column name="answer" type="TEXT">
+            <column name="answer" type="TEXT" remarks="Used to store the answer">
                 <constraints nullable="true" />
             </column>
-            <column name="correct" type="BOOLEAN" defaultValueBoolean="false">
+            <column name="correct" type="BOOLEAN" defaultValueBoolean="false" remarks="Flag to identify whether the answer is correct">
                 <constraints nullable="false"/>
             </column>
-            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true" remarks="Flag to identify whether the answer is active (active = most actual)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the answer is created">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="TIMESTAMP">
+            <column name="updated_at" type="TIMESTAMP" remarks="Stores the date and time at which the answer was updated">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -239,35 +239,35 @@
     </changeSet>
 
     <changeSet id="202303232030-7" author="mkrolczyk">
-        <createTable tableName="take">
-            <column name="take_id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="take" remarks="Used to track the enrollment and timing of user attempts to tests and quizzes">
+            <column name="take_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the 'take' action">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="BIGINT" remarks="The user id to identify the quiz taker">
                 <constraints nullable="false"/>
             </column>
-            <column name="quiz_id" type="BIGINT">
+            <column name="quiz_id" type="BIGINT" remarks="The quiz id to identify the quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="take_status" type="SMALLINT" defaultValue="0">
+            <column name="take_status" type="SMALLINT" defaultValue="0" remarks="The status of the take. It can be enrolled, started, paused, finished">
                 <constraints nullable="false"/>
             </column>
-            <column name="score_result" type="SMALLINT" defaultValue="0">
+            <column name="score_result" type="SMALLINT" defaultValue="0" remarks="The total score obtained by the user">
                 <constraints nullable="false"/>
             </column>
-            <column name="comments" type="TEXT">
+            <column name="comments" type="TEXT" remarks="Used to store the 'take' action remarks">
                 <constraints nullable="true"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the 'take' action has started">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="TIMESTAMP">
+            <column name="updated_at" type="TIMESTAMP" remarks="Stores the date and time at which the take was updated">
                 <constraints nullable="true"/>
             </column>
-            <column name="started_at" type="TIMESTAMP">
+            <column name="started_at" type="TIMESTAMP" remarks="Stores the date and time at which the 'take' action started">
                 <constraints nullable="true"/>
             </column>
-            <column name="finished_at" type="TIMESTAMP">
+            <column name="finished_at" type="TIMESTAMP" remarks="Stores the date and time at which the 'take' action is finished">
                 <constraints nullable="true"/>
             </column>
         </createTable>
@@ -305,29 +305,29 @@
     </changeSet>
 
     <changeSet id="202303232030-10" author="mkrolczyk">
-        <createTable tableName="take_answer">
-            <column name="id" type="BIGINT" autoIncrement="true">
+        <createTable tableName="take_answer" remarks="Used to store the answers selected by the user while taking the test or quiz">
+            <column name="id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the 'take answer' action">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="take_id" type="BIGINT">
+            <column name="take_id" type="BIGINT" remarks="The 'take' action id to identify the quiz attempt">
                 <constraints nullable="false"/>
             </column>
-            <column name="question_id" type="BIGINT">
+            <column name="question_id" type="BIGINT" remarks="The question id for which the answer was taken">
                 <constraints nullable="false"/>
             </column>
-            <column name="answer_id" type="BIGINT">
+            <column name="answer_id" type="BIGINT" remarks="The answer id to identify the quiz answer">
                 <constraints nullable="false"/>
             </column>
-            <column name="open_text_answer" type="TEXT">
+            <column name="open_text_answer" type="TEXT" remarks="Used to store the answer in case of input or textarea type of questions">
                 <constraints nullable="true"/>
             </column>
-            <column name="most_actual_answer" type="BOOLEAN" defaultValueBoolean="true">
+            <column name="most_actual_answer" type="BOOLEAN" defaultValueBoolean="true" remarks="Flag to identify whether the answer is most actual (ex: user give an answer, withdraw it, and then give another one)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the answer is created">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="TIMESTAMP">
+            <column name="updated_at" type="TIMESTAMP" remarks="Stores the date and time at which the answer is updated">
                 <constraints nullable="true"/>
             </column>
         </createTable>
