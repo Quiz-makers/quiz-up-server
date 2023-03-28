@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
+@Log4j2
 public class AuthController {
 
     private final JwtService jwtService;
@@ -36,6 +38,7 @@ public class AuthController {
     @ApiResponse(headers = @Header(name = HttpHeaders.AUTHORIZATION))
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest) {
+        log.info("Started execution authenticate method");
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {

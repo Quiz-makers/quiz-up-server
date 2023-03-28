@@ -1,0 +1,33 @@
+version: '3.9'
+services:
+  elasticsearch:
+    image: elasticsearch:${ELK_VERSION}
+    container_name: elasticsearch
+    volumes:
+      - ./config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+  logstash:
+    image: logstash:${ELK_VERSION}
+    container_name: logstash
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./config/logstash/:/etc/logstash/conf.d/
+    ports:
+      - "9999:9999"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+  kibana:
+    image: kibana:${ELK_VERSION}
+    container_name: kibana
+    volumes:
+      - ./config/kibana/:/usr/share/kibana/config/
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
