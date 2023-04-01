@@ -1,5 +1,6 @@
 package pl.quiz.up.common.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,9 @@ public class SecurityConfig {
     private final JwtAuthFilter authFilter;
     private final UserInfoUserDetailsService userDetailsService;
 
+    @Value("#{'${spring.security.permit.all}'.replaceAll('\\s', '').split(',')}")
+    private String[] permitAll;
+
     public SecurityConfig(JwtAuthFilter authFilter, UserInfoUserDetailsService userDetailsService) {
         this.authFilter = authFilter;
         this.userDetailsService = userDetailsService;
@@ -37,6 +41,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers(permitAll).permitAll()
+                .and()
                 .authorizeHttpRequests().anyRequest()
                 .authenticated().and()
                 .sessionManagement()

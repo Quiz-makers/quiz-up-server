@@ -11,19 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.quiz.up.auth.dto.*;
-import pl.quiz.up.auth.entity.UserInfo;
-import pl.quiz.up.auth.mapper.DTO;
-import pl.quiz.up.auth.service.JwtService;
+import pl.quiz.up.auth.dto.AuthRequest;
+import pl.quiz.up.auth.dto.EmailValidationRequestDto;
+import pl.quiz.up.auth.dto.RegisterRequest;
+import pl.quiz.up.auth.dto.UserNameValidationRequestDto;
 import pl.quiz.up.auth.service.UserInfoService;
-import pl.quiz.up.auth.messages.MessagesEnum;
-import pl.quiz.up.auth.messages.Translator;
-
-import java.util.Set;
+import pl.quiz.up.common.entity.UserInfo;
+import pl.quiz.up.common.exception.dto.ValidationErrorList;
+import pl.quiz.up.common.mapper.DTO;
+import pl.quiz.up.common.messages.MessagesEnum;
+import pl.quiz.up.common.messages.Translator;
+import pl.quiz.up.common.service.JwtService;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +45,8 @@ public class AuthController {
         if (authentication.isAuthenticated()) {
             return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtService.generateToken(authRequest.getEmail())).build();
         } else {
-            throw new UsernameNotFoundException(Translator.translate(MessagesEnum.INVALID_EMAIL_OR_PASSWORD));
+            ValidationErrorList body = ValidationErrorList.of(AuthRequest.Fields.password, Translator.translate(MessagesEnum.INVALID_EMAIL_OR_PASSWORD));
+            return body.createResponseEntity();
         }
     }
 
@@ -58,9 +60,7 @@ public class AuthController {
     public ResponseEntity<?> validateEmail(@Valid @RequestBody EmailValidationRequestDto dto) {
         if (userInfoService.doEmailExists(dto.getEmail())) {
             String fieldName = EmailValidationRequestDto.Fields.email;
-            ErrorDto errorDto = new ErrorDto(fieldName, Translator.translate(MessagesEnum.EXISTS_EMAIL));
-            ValidationErrorsDto body = new ValidationErrorsDto(Set.of(errorDto));
-
+            ValidationErrorList body = ValidationErrorList.of(fieldName, Translator.translate(MessagesEnum.EXISTS_EMAIL));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }
         return ResponseEntity.ok().build();
@@ -70,9 +70,7 @@ public class AuthController {
     public ResponseEntity<?> validateEmail(@RequestBody UserNameValidationRequestDto dto) {
         if (userInfoService.doUserNameExists(dto.getUserName())) {
             String fieldName = UserNameValidationRequestDto.Fields.userName;
-            ErrorDto errorDto = new ErrorDto(fieldName, Translator.translate(MessagesEnum.EXISTS_USER_NAME));
-            ValidationErrorsDto body = new ValidationErrorsDto(Set.of(errorDto));
-
+            ValidationErrorList body = ValidationErrorList.of(fieldName, Translator.translate(MessagesEnum.EXISTS_USER_NAME));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }
         return ResponseEntity.ok().build();

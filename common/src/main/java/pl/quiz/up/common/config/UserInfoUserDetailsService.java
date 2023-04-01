@@ -1,12 +1,11 @@
 package pl.quiz.up.common.config;
 
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.quiz.up.common.entity.UserInfo;
 import pl.quiz.up.common.service.repository.UserInfoRepository;
-
 
 import java.util.Optional;
 
@@ -20,10 +19,10 @@ public class UserInfoUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         Optional<UserInfo> userInfo = repository.findByEmail(email);
         return userInfo.map(UserInfoUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found " + email));
+                .orElseThrow(() -> new InternalAuthenticationServiceException("Email not found"));
 
     }
 }

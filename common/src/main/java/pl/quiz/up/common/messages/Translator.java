@@ -1,4 +1,4 @@
-package pl.quiz.up.auth.messages;
+package pl.quiz.up.common.messages;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

@@ -4,14 +4,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.quiz.up.auth.entity.UserInfo;
-import pl.quiz.up.auth.exception.ValidationErrorDto;
-import pl.quiz.up.auth.exception.ValidationException;
-import pl.quiz.up.auth.service.repository.UserInfoRepository;
-import pl.quiz.up.auth.messages.MessagesEnum;
-
-import java.util.HashSet;
-import java.util.Set;
+import pl.quiz.up.common.entity.UserInfo;
+import pl.quiz.up.common.exception.dto.ValidationErrorList;
+import pl.quiz.up.common.messages.MessagesEnum;
+import pl.quiz.up.common.service.repository.UserInfoRepository;
 
 @Service
 public class UserInfoService {
@@ -33,18 +29,18 @@ public class UserInfoService {
 
     @Transactional(propagation = Propagation.MANDATORY)
     protected void validate(UserInfo userInfo) {
-        Set<ValidationErrorDto> validationErrorDtos = new HashSet<>();
+        ValidationErrorList validationErrorList = ValidationErrorList.empty();
         if (doEmailExists(userInfo.getEmail()))
-            validationErrorDtos.add(new ValidationErrorDto(UserInfo.Fields.email, MessagesEnum.EXISTS_EMAIL));
-        if(doUserNameExists(userInfo.getUserName()))
-            validationErrorDtos.add(new ValidationErrorDto(UserInfo.Fields.userName, MessagesEnum.EXISTS_USER_NAME));
-        if(!validationErrorDtos.isEmpty())
-            throw new ValidationException(validationErrorDtos);
+            validationErrorList.add(UserInfo.Fields.email, MessagesEnum.EXISTS_EMAIL);
+        if (doUserNameExists(userInfo.getUserName()))
+            validationErrorList.add(UserInfo.Fields.userName, MessagesEnum.EXISTS_USER_NAME);
+        validationErrorList.throwIfNotEmpty();
     }
 
     public boolean doEmailExists(String email) {
         return repository.existsByEmail(email);
     }
+
     public boolean doUserNameExists(String userName) {
         return repository.existsByUserName(userName);
     }

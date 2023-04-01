@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.quiz.up.auth.messages.Messages;
+import lombok.experimental.FieldNameConstants;
+import pl.quiz.up.common.messages.Messages;
 
+@FieldNameConstants
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
