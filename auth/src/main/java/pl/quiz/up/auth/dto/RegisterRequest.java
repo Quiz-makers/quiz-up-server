@@ -18,6 +18,7 @@ public class RegisterRequest {
     private String surname;
     @NotBlank(message = Messages.EMPTY_FIELD)
     private String userName;
+    @NotBlank(message = Messages.EMPTY_FIELD)
     @Email(message = Messages.BAD_EMAIL)
     private String email;
     @NotBlank(message = Messages.EMPTY_FIELD)

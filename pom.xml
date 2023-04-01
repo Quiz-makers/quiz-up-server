@@ -15,6 +15,7 @@
         <module>quiz-service</module>
         <module>db</module>
         <module>gateway</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -33,6 +34,8 @@
         <open.api.version>2.0.4</open.api.version>
         <spring-cloud.version>2022.0.1</spring-cloud.version>
         <slf4j.version>2.0.5</slf4j.version>
+        <common-version>1.0.0</common-version>
+        <parent-pom-version>1.0.0</parent-pom-version>
     </properties>
 
     <dependencyManagement>

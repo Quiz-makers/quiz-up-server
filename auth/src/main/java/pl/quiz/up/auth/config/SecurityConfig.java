@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,7 +21,7 @@ import pl.quiz.up.auth.service.filter.JwtAuthFilter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfig{
     private final JwtAuthFilter authFilter;
     private final UserInfoUserDetailsService userDetailsService;
 
@@ -40,7 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/register", "/authenticate", "/register/email/validate", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/products/**")
+                .authorizeHttpRequests().requestMatchers("/test/**")
                 .authenticated().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

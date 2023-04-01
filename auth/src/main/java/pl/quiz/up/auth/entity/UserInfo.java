@@ -58,6 +58,6 @@ public class UserInfo {
     }
 
     public void setDefaultRole() {
-        setRoles(Set.of(RolesEnum.USER_ROLE));
+        setRoles(Set.of(RolesEnum.ROLE_USER));
     }
 }

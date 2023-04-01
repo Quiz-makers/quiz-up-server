@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@PreAuthorize("hasAnyAuthority(T(pl.quiz.up.auth.entity.RolesEnum).USER_ROLE.name(), T(pl.quiz.up.auth.entity.RolesEnum).MODERATOR_ROLE.name())")
+@PreAuthorize("hasAnyAuthority(T(pl.quiz.up.auth.entity.RolesEnum).ROLE_MODERATOR.name())")
 public @interface ModeratorAuthority {
     @AliasFor(annotation = PreAuthorize.class)
-    String value() default "hasAnyAuthority(T(pl.quiz.up.auth.entity.RolesEnum).USER_ROLE.name(), T(pl.quiz.up.auth.entity.RolesEnum).MODERATOR_ROLE.name())";
+    String value() default "hasAnyAuthority(T(pl.quiz.up.auth.entity.RolesEnum).ROLE_MODERATOR.name())";
 }
