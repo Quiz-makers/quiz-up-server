@@ -20,5 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build and Test with Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
         run: |
           mvn clean install -DskipTests=${{ env.SKIP_TESTS }}
