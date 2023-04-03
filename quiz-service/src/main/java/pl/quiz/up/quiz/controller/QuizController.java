@@ -2,49 +2,44 @@ package pl.quiz.up.quiz.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.quiz.up.common.mapper.DTO;
-import pl.quiz.up.common.messages.MessagesEnum;
-import pl.quiz.up.common.messages.Translator;
-import pl.quiz.up.quiz.dto.QuizzesByCategoryReadDto;
-import pl.quiz.up.quiz.dto.QuizzesReadDto;
+import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.service.QuizService;
 
 
 @RestController
 @RequiredArgsConstructor
 @Log4j2
-public class QuizController {
+public final class QuizController {
 
     private final QuizService quizService;
 
-    @PostMapping("/quiz")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void register(@DTO(QuizWriteDto.class) Quiz quiz) {
+//    @PostMapping("/quiz")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void publishQuiz(@DTO(QuizWriteDto.class) QuizEntity quiz) {
+//
+//        quizService.publishQuiz(quiz);
+//    }
 
-        quizService.save(quiz);
-    }
-
-    @GetMapping("/test")
+    @GetMapping("/quiz/{id}")
 //    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> startQuizResolving() {
-        return ResponseEntity.ok(Translator.translate(MessagesEnum.BAD_EMAIL));
+    public ResponseEntity<QuizDto> getQuiz(@PathVariable Long id) {
+        return ResponseEntity.ok(quizService.getQuizById(id));
     }
 
-    @GetMapping("/quizzes")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<QuizzesReadDto> getQuizzes() {
+//    @GetMapping("/quizzes")
+////    @PreAuthorize("hasRole('ROLE_USER')")
+//    public ResponseEntity<QuizzesReadDto> getAllQuizzes() {
+//
+//        return ResponseEntity.ok(quizService.getAllQuizzes());
+//    }
 
-        return ResponseEntity.ok(quizService.getQuizzes(category));
-    }
-
-    @GetMapping("/quizzes/{category}")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<QuizzesByCategoryReadDto> getQuizzesByCategory(@PathVariable String category) {
-
-        return ResponseEntity.ok(quizService.getQuizzesByCategory(category));
-    }
+//    @GetMapping("/quizzes/{category}")
+////    @PreAuthorize("hasRole('ROLE_USER')")
+//    public ResponseEntity<QuizzesByCategoryReadDto> getAllQuizzesFromCategory(@PathVariable String category) {
+//
+//        return ResponseEntity.ok(quizService.getAllQuizzesFromCategory(category));
+//    }
 
 }

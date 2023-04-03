@@ -1,9 +1,6 @@
 package pl.quiz.up.quiz.dto.mapper;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import pl.quiz.up.quiz.dto.response.StartQuizDto;
-import pl.quiz.up.quiz.entity.QuizEntity;
 
 public class StartQuizDtoMapper {
 

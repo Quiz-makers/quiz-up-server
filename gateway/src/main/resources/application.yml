@@ -26,7 +26,7 @@ spring:
         - id: quiz
           uri: http://${quiz-service-1.host}:${quiz-service-1.port}/
           predicates:
-            - Path=/quiz/**
+            - Path=/quizapp/**
         - id: openAPI
           uri: http://${open-api.host}:${open-api.port}/
           predicates:
@@ -46,5 +46,5 @@ springdoc:
         name: API Gateway Service
       - url: /auth/v3/api-docs
         name: Authorization Service
-      - url: /quiz/v3/api-docs
+      - url: /quizapp/v3/api-docs
         name: Quiz Service
