@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public final class QuizzesReadDto {
+public final class AllQuizzesFromCategoryReadDto {
     //TODO
 }

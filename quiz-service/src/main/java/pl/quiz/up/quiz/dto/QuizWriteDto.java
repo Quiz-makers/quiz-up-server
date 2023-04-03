@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public
-class QuizWriteDto {
+public class QuizWriteDto {
     //TODO
 }

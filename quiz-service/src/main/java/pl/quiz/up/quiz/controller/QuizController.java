@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.quiz.up.quiz.dto.AllQuizzesFromCategoryReadDto;
+import pl.quiz.up.quiz.dto.AllQuizzesReadDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.service.QuizService;
 
@@ -30,14 +32,14 @@ public final class QuizController {
 
 //    @GetMapping("/quizzes")
 ////    @PreAuthorize("hasRole('ROLE_USER')")
-//    public ResponseEntity<QuizzesReadDto> getAllQuizzes() {
+//    public ResponseEntity<AllQuizzesReadDto> getAllQuizzes() {
 //
 //        return ResponseEntity.ok(quizService.getAllQuizzes());
 //    }
-
+//
 //    @GetMapping("/quizzes/{category}")
 ////    @PreAuthorize("hasRole('ROLE_USER')")
-//    public ResponseEntity<QuizzesByCategoryReadDto> getAllQuizzesFromCategory(@PathVariable String category) {
+//    public ResponseEntity<AllQuizzesFromCategoryReadDto> getAllQuizzesFromCategory(@PathVariable String category) {
 //
 //        return ResponseEntity.ok(quizService.getAllQuizzesFromCategory(category));
 //    }

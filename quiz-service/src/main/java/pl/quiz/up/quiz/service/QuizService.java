@@ -2,6 +2,8 @@ package pl.quiz.up.quiz.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.quiz.up.quiz.dto.AllQuizzesFromCategoryReadDto;
+import pl.quiz.up.quiz.dto.AllQuizzesReadDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.exception.QuizNotFoundException;
 import pl.quiz.up.quiz.repository.QuizRepository;
@@ -23,11 +25,11 @@ public final class QuizService {
                 .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + id));
     }
 
-//    QuizzesReadDto getAllQuizzes() {
+//    public AllQuizzesReadDto getAllQuizzes() {
 //        //TODO
 //    }
-
-//    QuizzesByCategoryReadDto getAllQuizzesFromCategory(final String category) {
+//
+//    public AllQuizzesFromCategoryReadDto getAllQuizzesFromCategory(final String category) {
 //        //TODO
 //    }
 
