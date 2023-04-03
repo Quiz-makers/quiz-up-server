@@ -22,9 +22,9 @@ services:
 #    entrypoint: ['check-auth-server-started.sh']
     environment:
       - "SERVER_PORT=8290"
-#      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
-#      - "SPRING_DATASOURCE_USERNAME=postgres"
-#      - "SPRING_DATASOURCE_PASSWORD=postgres"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=postgres"
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     networks:
