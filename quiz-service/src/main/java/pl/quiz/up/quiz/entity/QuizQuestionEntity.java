@@ -1,12 +1,17 @@
 package pl.quiz.up.quiz.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.util.Objects;
 import java.util.Set;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "quiz_question", schema = "public", catalog = "quiz_db")
@@ -39,7 +44,7 @@ public class QuizQuestionEntity {
     private Timestamp updatedAt;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizQuestionEntity")
-    private Set<QuizAnswerEntity> quizQuestionEntities;
+    private Set<QuizAnswerEntity> quizAnswerEntities;
 
     @ManyToOne
     @JoinColumn(name="quiz_id", nullable=false)
