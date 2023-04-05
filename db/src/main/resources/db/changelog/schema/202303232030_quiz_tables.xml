@@ -21,7 +21,21 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="202303232030-1" author="mkrolczyk" >
+    <changeSet id="202303232030-1" author="mkrolczyk">
+        <createTable tableName="quiz_type" remarks="Used to store quiz types">
+            <column name="type_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz type">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)" remarks="Type name">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the quiz type is created">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="202303232030-2" author="mkrolczyk" >
         <createTable tableName="quiz" remarks="Used to store the quiz data">
             <column name="quiz_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz">
                 <constraints primaryKey="true" nullable="false"/>
@@ -41,7 +55,7 @@
             <column name="description" type="TEXT" remarks="Section for a detailed description of the quiz">
                 <constraints nullable="true"/>
             </column>
-            <column name="type" type="SMALLINT" defaultValue="0" remarks="The type to distinguish between the test and the quiz">
+            <column name="type_id" type="BIGINT" remarks="The type of quiz">
                 <constraints nullable="false"/>
             </column>
             <column name="category_id" type="BIGINT" remarks="The category of the quiz">
@@ -65,7 +79,7 @@
             <column name="public_from" type="TIMESTAMP" remarks="Stores the date and time from which the test/quiz is publicly available">
                 <constraints nullable="true"/>
             </column>
-            <column name="quiz_time" type="INTERVAL" remarks="Total time for quiz. NULL if there is no time limit">
+            <column name="quiz_time" type="BIGINT" remarks="Total time for quiz. NULL if there is no time limit">
                 <constraints nullable="true"/>
             </column>
             <column name="starts_at" type="TIMESTAMP" remarks="Stores the date and time at which the test/quiz starts and opens up for takes">
@@ -82,6 +96,15 @@
                 baseColumnNames="owner_id"
                 referencedTableName="system_user"
                 referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_quiz_type"
+                baseTableName="quiz"
+                baseColumnNames="type_id"
+                referencedTableName="quiz_type"
+                referencedColumnNames="type_id"
                 onDelete="NO ACTION"
                 onUpdate="NO ACTION"/>
 
@@ -104,7 +127,7 @@
 
     </changeSet>
 
-    <changeSet id="202303232030-2" author="mkrolczyk">
+    <changeSet id="202303232030-3" author="mkrolczyk">
         <createTable tableName="quiz_meta" remarks="Used to store the quiz metadata">
             <column name="id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz meta">
                 <constraints primaryKey="true" nullable="false"/>
@@ -136,7 +159,7 @@
 
     </changeSet>
 
-    <changeSet id="202303232030-3" author="mkrolczyk">
+    <changeSet id="202303232030-4" author="mkrolczyk">
         <createTable tableName="quiz_question" remarks="Used to store the questions related to tests and quizzes">
             <column name="question_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz question">
                 <constraints primaryKey="true" nullable="false"/>
@@ -178,7 +201,7 @@
 
     </changeSet>
 
-    <changeSet id="202303232030-4" author="mkrolczyk">
+    <changeSet id="202303232030-5" author="mkrolczyk">
         <createTable tableName="quiz_answer" remarks="Used to store the answers related to tests and quizzes">
             <column name="answer_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz answer">
                 <constraints primaryKey="true" nullable="false"/>
@@ -226,19 +249,19 @@
 
     </changeSet>
 
-    <changeSet id="202303232030-5" author="mkrolczyk">
+    <changeSet id="202303232030-6" author="mkrolczyk">
         <createIndex indexName="idx_answer_quiz" tableName="quiz_answer">
             <column name="quiz_id"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="202303232030-6" author="mkrolczyk">
+    <changeSet id="202303232030-7" author="mkrolczyk">
         <createIndex indexName="idx_answer_question" tableName="quiz_answer">
             <column name="question_id"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="202303232030-7" author="mkrolczyk">
+    <changeSet id="202303232030-8" author="mkrolczyk">
         <createTable tableName="take" remarks="Used to track the enrollment and timing of user attempts to tests and quizzes">
             <column name="take_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the 'take' action">
                 <constraints primaryKey="true" nullable="false"/>
@@ -292,19 +315,19 @@
 
     </changeSet>
 
-    <changeSet id="202303232030-8" author="mkrolczyk">
+    <changeSet id="202303232030-9" author="mkrolczyk">
         <createIndex indexName="idx_take_user" tableName="take">
             <column name="user_id" />
         </createIndex>
     </changeSet>
 
-    <changeSet id="202303232030-9" author="mkrolczyk">
+    <changeSet id="202303232030-10" author="mkrolczyk">
         <createIndex indexName="idx_take_quiz" tableName="take">
             <column name="quiz_id" />
         </createIndex>
     </changeSet>
 
-    <changeSet id="202303232030-10" author="mkrolczyk">
+    <changeSet id="202303232030-11" author="mkrolczyk">
         <createTable tableName="take_answer" remarks="Used to store the answers selected by the user while taking the test or quiz">
             <column name="id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the 'take answer' action">
                 <constraints primaryKey="true" nullable="false"/>
@@ -361,19 +384,19 @@
 
     </changeSet>
 
-    <changeSet id="202303232030-11" author="mkrolczyk">
+    <changeSet id="202303232030-12" author="mkrolczyk">
         <createIndex indexName="idx_answer_take" tableName="take_answer">
             <column name="take_id"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="202303232030-12" author="mkrolczyk">
+    <changeSet id="202303232030-13" author="mkrolczyk">
         <createIndex indexName="idx_tanswer_question" tableName="take_answer">
             <column name="question_id"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="202303232030-13" author="mkrolczyk">
+    <changeSet id="202303232030-14" author="mkrolczyk">
         <createIndex indexName="idx_tanswer_answer" tableName="take_answer">
             <column name="answer_id"/>
         </createIndex>

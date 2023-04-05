@@ -17,12 +17,4 @@ public class StartQuizDto {
 
     private Set<QuestionDto> questionDtoSet;
 
-    public static StartQuizDto toDto(QuizEntity quiz) {
-        return StartQuizDto
-                .builder()
-                .quizId(quiz.getQuizId())
-                .title(quiz.getTitle())
-                .description(quiz.getDescription())
-                .build();
-    }
 }
