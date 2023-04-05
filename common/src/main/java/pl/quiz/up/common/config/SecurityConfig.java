@@ -22,7 +22,9 @@ import pl.quiz.up.common.service.filter.JwtAuthFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
     private final JwtAuthFilter authFilter;
+
     private final UserInfoUserDetailsService userDetailsService;
 
     @Value("#{'${spring.security.permit.all}'.replaceAll('\\s', '').split(',')}")
