@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Id;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpInputMessage;
@@ -30,6 +31,8 @@ public class DTOModelMapper extends RequestResponseBodyMethodProcessor {
     public DTOModelMapper(ObjectMapper objectMapper, EntityManager entityManager) {
         super(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
         this.entityManager = entityManager;
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
     @Override

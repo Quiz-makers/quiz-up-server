@@ -5,31 +5,24 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Objects;
 
 @Data
 @Entity
-@Table(name = "quiz_category", schema = "public", catalog = "quiz_db")
-public class QuizCategoryEntity {
+@Table(name = "quiz_type", schema = "public", catalog = "quiz_db")
+public class QuizTypeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "category_id")
-    private Long categoryId;
+    @Column(name = "type_id")
+    private Long typeId;
 
     @Basic
-    @Column(name = "category")
-    private String category;
-
-    @Basic
-    @Column(name = "thumbnail")
-    private byte[] thumbnail;
+    @Column(name = "type")
+    private String type;
 
     @Basic
     @Column(name = "created_at")
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp createdAt;
-
 }
