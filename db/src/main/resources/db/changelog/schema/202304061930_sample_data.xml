@@ -4,7 +4,12 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db/changelog/schema/202303232020_user_tables.xml"/>
-    <include file="db/changelog/schema/202303232030_quiz_tables.xml"/>
-    <include file="db/changelog/schema/202304061930_sample_data.xml"/>
+    <changeSet id="202304061930-0" author="mkrolczyk">
+        <loadData file="data/categories.csv" tableName="quiz_category" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="202304061930-1" author="mkrolczyk">
+        <loadData file="data/quiz_types.csv" tableName="quiz_type" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
