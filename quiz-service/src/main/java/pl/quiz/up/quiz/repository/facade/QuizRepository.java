@@ -106,4 +106,33 @@ public interface QuizRepository {
     """)
     Set<QuizDto> findAllPubliclyAvailableFromGivenCategory(@Param("requestorId") long requestorId, @Param("category") final String category);
 
+    @Query("""
+        SELECT
+            q.quizId AS quizId,
+            q.title AS title,
+            q.metaTitle AS metaTitle,
+            owner.name AS ownerName,
+            owner.surname AS ownerSurname,
+            q.summary AS summary,
+            q.description AS description,
+            t.type AS type,
+            cat.category AS category,
+            q.score AS score,
+            q.slug AS slug,
+            q.publicAvailable AS publicAvailable,
+            q.createdAt AS createdAt,
+            q.updatedAt AS updatedAt,
+            q.publicFrom AS publicFrom,
+            q.quizTime AS quizTime,
+            q.startsAt AS startsAt,
+            q.endsAt AS endsAt
+        FROM QuizEntity q
+        INNER JOIN system_user owner ON q.ownerId = owner.id
+        INNER JOIN QuizTypeEntity t ON q.type = t.typeId
+        INNER JOIN QuizCategoryEntity cat ON q.categoryId = cat.categoryId
+        WHERE
+            q.ownerId = :requestorId
+    """)
+    Set<QuizDto> findAllUserQuizzes(@Param("requestorId") long requestorId);
+
 }

@@ -63,6 +63,11 @@ public class QuizService {
                 .findAllPubliclyAvailable(requestorId);
     }
 
+    public Set<QuizDto> getAllUserQuizzes(final Long requestorId) {
+        return quizRepository
+                .findAllUserQuizzes(requestorId);
+    }
+
     public Set<QuizDto> getAllPublicQuizzesFromGivenCategory(final Long requestorId, final String category) {
         return quizRepository
                 .findAllPubliclyAvailableFromGivenCategory(requestorId, category);

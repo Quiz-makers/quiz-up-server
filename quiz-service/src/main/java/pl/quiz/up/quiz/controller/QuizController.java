@@ -69,4 +69,12 @@ public class QuizController {
                 quizService.getAllPublicQuizzesFromGivenCategory(AuthenticationUtils.getUserId(), category));
     }
 
+    @UserAuthority
+    @GetMapping("/quizzes/user")
+    public ResponseEntity<Set<QuizDto>> getAllUserQuizzes() {
+
+        return ResponseEntity.ok(
+                quizService.getAllUserQuizzes(AuthenticationUtils.getUserId()));
+    }
+
 }
