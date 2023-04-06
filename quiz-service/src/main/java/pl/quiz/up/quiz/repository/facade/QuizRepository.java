@@ -40,7 +40,7 @@ public interface QuizRepository {
         INNER JOIN QuizCategoryEntity cat ON q.categoryId = cat.categoryId
         WHERE
             q.quizId = :quizId AND
-            q.ownerId = :requestorId OR q.publicAvailable = TRUE
+            (q.ownerId = :requestorId OR q.publicAvailable = TRUE)
           
     """)
     Optional<QuizDto> findQuiz(@Param("requestorId") long requestorId, @Param("quizId") long quizId);

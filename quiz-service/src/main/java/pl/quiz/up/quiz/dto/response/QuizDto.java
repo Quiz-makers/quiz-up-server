@@ -1,50 +1,44 @@
 package pl.quiz.up.quiz.dto.response;
 
-import lombok.*;
 
 import java.sql.Timestamp;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
-public class QuizDto {
+public interface QuizDto {
 
-    private Long quizId;
+    Long getQuizId();
 
-    private String ownerName;
+    String getOwnerName();
 
-    private String ownerSurname;
+    String getOwnerSurname();
 
-    private String title;
+    String getTitle();
 
-    private String metaTitle;
+    String getMetaTitle();
 
-    private String summary;
+    String getSummary();
 
-    private String description;
+    String getDescription();
 
-    private String type;
+    String getType();
 
-    private String category;
+    String getCategory();
 
-    private Short score;
+    Short getScore();
 
-    private String slug;
+    String getSlug();
 
-    private Boolean publicAvailable;
+    Boolean getPublicAvailable();
 
-    private Timestamp createdAt;
+    Timestamp getCreatedAt();
 
-    private Timestamp updatedAt;
+    Timestamp getUpdatedAt();
 
-    private Timestamp publicFrom;
+    Timestamp getPublicFrom();
 
-    private Long quizTime;
+    Long getquizTime();
 
-    private Timestamp startsAt;
+    Timestamp getStartsAt();
 
-    private Timestamp endsAt;
+    Timestamp getEndsAt();
 
 }

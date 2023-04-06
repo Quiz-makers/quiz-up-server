@@ -4,15 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.quiz.up.common.utils.AuthenticationUtils;
 import pl.quiz.up.quiz.dto.response.CategoriesDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.dto.response.QuizTypesDto;
 import pl.quiz.up.quiz.entity.QuizEntity;
+import pl.quiz.up.quiz.exception.IllegalQuizOwnerIdException;
 import pl.quiz.up.quiz.exception.QuizNotFoundException;
 import pl.quiz.up.quiz.repository.facade.QuizCategoryRepository;
 import pl.quiz.up.quiz.repository.facade.QuizRepository;
 import pl.quiz.up.quiz.repository.facade.QuizTypeRepository;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,9 +34,16 @@ public class QuizService {
     @Transactional
     public void publishQuiz(final QuizEntity quiz) {
 
-        quiz.setSlug(generateQuizSlug(quiz.getTitle()));
+        Long requestorId = AuthenticationUtils.getUserId();
 
-        quizRepository.save(quiz);
+        if(Objects.equals(quiz.getOwnerId(), requestorId)) {
+
+            quiz.setSlug(generateQuizSlug(quiz.getTitle()));
+
+            quizRepository.save(quiz);
+        } else {
+            throw new IllegalQuizOwnerIdException("Invalid quiz owner id value");
+        }
     }
 
     public QuizDto getQuizById(final Long requestorId, long quizId) {
