@@ -9,8 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.time.Duration;
-import java.util.Objects;
 import java.util.Set;
 
 @Builder
@@ -25,6 +23,10 @@ public class QuizEntity {
     @Id
     @Column(name = "quiz_id")
     private Long quizId;
+
+    @Basic
+    @Column(name = "quiz_code")
+    private String quizCode;
 
     @Basic
     @Column(name = "owner_id")
@@ -56,7 +58,7 @@ public class QuizEntity {
 
     @Basic
     @Column(name = "score")
-    private Short score;
+    private Integer score;
 
     @Basic
     @Column(name = "slug")
@@ -96,4 +98,8 @@ public class QuizEntity {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizEntity")
     private Set<QuizQuestionEntity> quizQuestionEntities;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizEntity")
+    private Set<QuizAnswerEntity> quizAnswerEntities;
+
 }

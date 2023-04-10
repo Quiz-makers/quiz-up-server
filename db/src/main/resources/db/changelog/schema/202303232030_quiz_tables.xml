@@ -12,7 +12,7 @@
             <column name="category" type="VARCHAR(50)" remarks="Category name">
                 <constraints nullable="false"/>
             </column>
-            <column name="thumbnail" type="BYTEA" defaultValue="NULL" remarks="Thumbnail for category">
+            <column name="thumbnail" type="BYTEA" remarks="Thumbnail for category">
                 <constraints nullable="true"/>
             </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the category is created">
@@ -40,6 +40,9 @@
             <column name="quiz_id" type="BIGINT" autoIncrement="true" remarks="The unique id to identify the quiz">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="quiz_code" type="VARCHAR(100)" remarks="Unique quiz code which can be shared by quiz owner to invite to his quiz">
+                <constraints nullable="false"/>
+            </column>
             <column name="owner_id" type="BIGINT" remarks="The owner id to identify the quiz creator">
                 <constraints nullable="false"/>
             </column>
@@ -61,7 +64,7 @@
             <column name="category_id" type="BIGINT" remarks="The category of the quiz">
                 <constraints nullable="false"/>
             </column>
-            <column name="score" type="SMALLINT" defaultValue="0" remarks="The total score of the quiz">
+            <column name="score" type="INTEGER" defaultValue="0" remarks="The total score of the quiz">
                 <constraints nullable="false"/>
             </column>
             <column name="slug" type="VARCHAR(100)" remarks="The slug (unique identifier) to form the URL">
@@ -173,6 +176,9 @@
             <column name="question" type="TEXT" remarks="Used to store the question">
                 <constraints nullable="false"/>
             </column>
+            <column name="question_image" type="BYTEA" remarks="Used to store the question image if needed">
+                <constraints nullable="true"/>
+            </column>
             <column name="score" type="SMALLINT" defaultValue="0" remarks="The score of an individual question">
                 <constraints nullable="false"/>
             </column>
@@ -213,7 +219,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="answer" type="TEXT" remarks="Used to store the answer">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="correct" type="BOOLEAN" defaultValueBoolean="false" remarks="Flag to identify whether the answer is correct">
                 <constraints nullable="false"/>

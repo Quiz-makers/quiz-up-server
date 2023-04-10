@@ -7,6 +7,8 @@ public interface QuizDto {
 
     Long getQuizId();
 
+    String getQuizCode();
+
     String getOwnerName();
 
     String getOwnerSurname();
@@ -23,7 +25,7 @@ public interface QuizDto {
 
     String getCategory();
 
-    Short getScore();
+    Integer getScore();
 
     String getSlug();
 

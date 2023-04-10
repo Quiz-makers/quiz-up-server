@@ -25,4 +25,5 @@ public class QuizTypeEntity {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp createdAt;
+
 }
