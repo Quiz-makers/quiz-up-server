@@ -7,13 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.quiz.up.common.messages.Messages;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuizWriteDto {
-
-    @NotNull(message = Messages.EMPTY_FIELD)
-    private Long ownerId;
+public class QuizRawWriteDto {
 
     @NotBlank(message = Messages.EMPTY_FIELD)
     private String title;
@@ -31,10 +30,10 @@ public class QuizWriteDto {
     @NotNull(message = Messages.EMPTY_FIELD)
     private Long categoryId;
 
-    @NotNull(message = Messages.EMPTY_FIELD)
-    private Short score;
+    private Long quizTime;
 
-    @NotNull(message = Messages.EMPTY_FIELD)
-    private Boolean publicAvailable;
+    private Timestamp startsAt;
+
+    private Timestamp endsAt;
 
 }

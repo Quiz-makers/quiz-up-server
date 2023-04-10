@@ -1,5 +1,6 @@
 package pl.quiz.up.quiz.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.quiz.up.common.annotation.UserAuthority;
 import pl.quiz.up.common.mapper.DTO;
 import pl.quiz.up.common.utils.AuthenticationUtils;
-import pl.quiz.up.quiz.dto.QuizWriteDto;
+import pl.quiz.up.quiz.dto.QuizFullWriteDto;
+import pl.quiz.up.quiz.dto.QuizRawWriteDto;
 import pl.quiz.up.quiz.dto.response.CategoriesDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.dto.response.QuizTypesDto;
@@ -29,9 +31,18 @@ public class QuizController {
     @UserAuthority
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void publishQuiz(@DTO(QuizWriteDto.class) QuizEntity quiz) {
+    public void publishQuizWithQuestionsAndAnswers(@RequestBody @Valid QuizFullWriteDto quizDto) {
 
-        quizService.publishQuiz(quiz);
+        quizService
+                .publishQuizWithQuestionsAndAnswers(AuthenticationUtils.getUserId(), quizDto);
+    }
+
+    @UserAuthority
+    @PostMapping("/raw")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void publishRawQuiz(@DTO(QuizRawWriteDto.class) QuizEntity quiz) {
+
+        quizService.publishRawQuiz(AuthenticationUtils.getUserId(), quiz);
     }
 
     @UserAuthority

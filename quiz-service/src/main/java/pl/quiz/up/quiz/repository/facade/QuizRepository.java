@@ -14,9 +14,12 @@ public interface QuizRepository {
 
     Optional<QuizEntity> findByQuizId(long id);
 
+    Boolean existsByTitle(String title);
+
     @Query("""
         SELECT
             q.quizId AS quizId,
+            q.quizCode AS quizCode,
             q.title AS title,
             q.metaTitle AS metaTitle,
             owner.name AS ownerName,
@@ -48,6 +51,7 @@ public interface QuizRepository {
     @Query("""
         SELECT
             q.quizId AS quizId,
+            q.quizCode AS quizCode,
             q.title AS title,
             q.metaTitle AS metaTitle,
             owner.name AS ownerName,
@@ -78,6 +82,7 @@ public interface QuizRepository {
     @Query("""
         SELECT
             q.quizId AS quizId,
+            q.quizCode AS quizCode,
             q.title AS title,
             q.metaTitle AS metaTitle,
             owner.name AS ownerName,
@@ -109,6 +114,7 @@ public interface QuizRepository {
     @Query("""
         SELECT
             q.quizId AS quizId,
+            q.quizCode AS quizCode,
             q.title AS title,
             q.metaTitle AS metaTitle,
             owner.name AS ownerName,

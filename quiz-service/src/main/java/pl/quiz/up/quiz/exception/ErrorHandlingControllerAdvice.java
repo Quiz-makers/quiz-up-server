@@ -61,6 +61,18 @@ public class ErrorHandlingControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(QuizTitleAlreadyExistsException.class)
+    ResponseEntity<Object> onQuizTitleAlreadyExistsException(QuizTitleAlreadyExistsException e, WebRequest request) {
+
+        final String message = e.getMessage();
+        log.warn("Captured QuizTitleAlreadyExistsException: " + message);
+
+        ExceptionResponse response =
+                new ExceptionResponse(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), message, request.getDescription(false));
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<Object> onDataIntegrityViolationException(DataIntegrityViolationException e, WebRequest request) {
 
