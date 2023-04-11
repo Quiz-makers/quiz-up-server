@@ -1,12 +1,19 @@
 package pl.quiz.up.quiz.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "take", schema = "public", catalog = "quiz_db")
@@ -51,10 +58,10 @@ public class TakeEntity {
 
     @Basic
     @Column(name = "started_at")
-    private Timestamp startedAt;
+    private LocalDateTime startedAt;
 
     @Basic
     @Column(name = "finished_at")
-    private Timestamp finishedAt;
+    private LocalDateTime finishedAt;
 
 }

@@ -36,8 +36,8 @@ public class ErrorHandlingControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationErrorList);
     }
 
-    @ExceptionHandler(QuizNotFoundException.class)
-    ResponseEntity<Object> onQuizNotFoundException(QuizNotFoundException e, WebRequest request) {
+    @ExceptionHandler(NotFoundException.class)
+    ResponseEntity<Object> onQuizNotFoundException(NotFoundException e, WebRequest request) {
 
         final String message = e.getMessage();
         log.warn("Captured QuizNotFoundException: " + message);

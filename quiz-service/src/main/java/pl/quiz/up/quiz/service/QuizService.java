@@ -10,7 +10,7 @@ import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.dto.response.QuizTypesDto;
 import pl.quiz.up.quiz.entity.QuizEntity;
 import pl.quiz.up.quiz.entity.QuizQuestionEntity;
-import pl.quiz.up.quiz.exception.QuizNotFoundException;
+import pl.quiz.up.quiz.exception.NotFoundException;
 import pl.quiz.up.quiz.exception.QuizTitleAlreadyExistsException;
 import pl.quiz.up.quiz.repository.SqlQuizAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.*;
@@ -81,7 +81,7 @@ public class QuizService {
     public QuizDto getQuizById(final Long requestorId, long quizId) {
         return quizRepository
                 .findQuiz(requestorId, quizId)
-                .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + quizId));
+                .orElseThrow(() -> new NotFoundException("Quiz not found with id: " + quizId));
     }
 
     public Set<CategoriesDto> getCategories() {

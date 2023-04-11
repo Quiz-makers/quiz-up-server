@@ -1,13 +1,19 @@
 package pl.quiz.up.quiz.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "take_answer", schema = "public", catalog = "quiz_db")
@@ -18,9 +24,9 @@ public class TakeAnswerEntity {
     @Column(name = "id")
     private Long id;
 
-    @Basic
-    @Column(name = "take_id")
-    private Long takeId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "take_id", referencedColumnName = "take_id")
+    private TakeEntity takeEntity;
 
     @Basic
     @Column(name = "question_id")
