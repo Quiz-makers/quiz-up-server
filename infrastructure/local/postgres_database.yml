@@ -18,6 +18,3 @@ services:
       - "./containers-data/postgres_db/db-1/data:/var/lib/postgresql/data/:z"
     networks:
       - ${GLOBAL_NETWORK:-services}
-networks:
-  quiz_app:
-    driver: bridge
