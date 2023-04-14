@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="202304122137-0" author="mkrolczyk">
+        <createTable tableName="user_favorite_quizzes" remarks="Used to store user favourite quizzes">
+            <column name="user_id" type="BIGINT" remarks="The unique ID of the user">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quiz_id" type="BIGINT" remarks="The unique id to identify the quiz">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="added_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the user favorite is added">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="user_favorite_quizzes_user_fk"
+                baseTableName="user_favorite_quizzes"
+                baseColumnNames="user_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="user_favorite_quizzes_quiz_fk"
+                baseTableName="user_favorite_quizzes"
+                baseColumnNames="quiz_id"
+                referencedTableName="quiz"
+                referencedColumnNames="quiz_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+    <changeSet id="202304122137-1" author="mkrolczyk">
+        <createTable tableName="shared_quizzes" remarks="Used to store private shared quizzes between users">
+            <column name="user_id" type="BIGINT" remarks="ID of the user which has access">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quiz_id" type="BIGINT" remarks="ID of the private quiz to which user has access">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="added_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which user added the private shared quiz">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="shared_quizzes_user_fk"
+                baseTableName="shared_quizzes"
+                baseColumnNames="user_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+        <addForeignKeyConstraint
+                constraintName="shared_quizzes_quiz_fk"
+                baseTableName="shared_quizzes"
+                baseColumnNames="quiz_id"
+                referencedTableName="quiz"
+                referencedColumnNames="quiz_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+
+    </changeSet>
+
+</databaseChangeLog>

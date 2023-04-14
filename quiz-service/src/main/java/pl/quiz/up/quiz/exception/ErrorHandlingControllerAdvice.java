@@ -61,8 +61,8 @@ public class ErrorHandlingControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(QuizTitleAlreadyExistsException.class)
-    ResponseEntity<Object> onQuizTitleAlreadyExistsException(QuizTitleAlreadyExistsException e, WebRequest request) {
+    @ExceptionHandler(AlreadyExistsException.class)
+    ResponseEntity<Object> onQuizTitleAlreadyExistsException(AlreadyExistsException e, WebRequest request) {
 
         final String message = e.getMessage();
         log.warn("Captured QuizTitleAlreadyExistsException: " + message);
