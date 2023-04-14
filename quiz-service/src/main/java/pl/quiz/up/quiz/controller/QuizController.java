@@ -46,6 +46,20 @@ public class QuizController {
     }
 
     @UserAuthority
+    @PostMapping("/favorite/{quidId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addQuizToFavorites(@PathVariable long quidId) {
+
+        quizService.addQuizToFavorites(AuthenticationUtils.getUserId(), quidId);
+    }
+
+    @UserAuthority
+    @GetMapping
+    public ResponseEntity<QuizDto> getQuizByQuizCode(@RequestHeader("quizCode") final String quizCode) {
+        return ResponseEntity.ok(quizService.addQuizByQuizCode(AuthenticationUtils.getUserId(), quizCode));
+    }
+
+    @UserAuthority
     @GetMapping("/{id}")
     public ResponseEntity<QuizDto> getQuiz(@PathVariable long id) {
         return ResponseEntity.ok(quizService.getQuizById(AuthenticationUtils.getUserId(), id));
@@ -86,6 +100,30 @@ public class QuizController {
 
         return ResponseEntity.ok(
                 quizService.getAllUserQuizzes(AuthenticationUtils.getUserId()));
+    }
+
+    @UserAuthority
+    @GetMapping("/quizzes/user/favorite")
+    public ResponseEntity<Set<QuizDto>> getAllUserFavoriteQuizzes() {
+
+        return ResponseEntity.ok(
+                quizService.getAllUserFavoriteQuizzes(AuthenticationUtils.getUserId()));
+    }
+
+    @UserAuthority
+    @GetMapping("/quizzes/user/mutual")
+    public ResponseEntity<Set<QuizDto>> getAllUserMutualQuizzes() {
+
+        return ResponseEntity.ok(
+                quizService.getAllUserMutualQuizzes(AuthenticationUtils.getUserId()));
+    }
+
+    @UserAuthority
+    @DeleteMapping("/favorite/{quidId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteQuizFromFavorites(@PathVariable long quidId) {
+
+        quizService.deleteQuizFromFavorites(AuthenticationUtils.getUserId(), quidId);
     }
 
 }

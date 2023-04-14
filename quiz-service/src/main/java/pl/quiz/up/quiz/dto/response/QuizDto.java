@@ -37,7 +37,7 @@ public interface QuizDto {
 
     Timestamp getPublicFrom();
 
-    Long getquizTime();
+    Long getQuizTime();
 
     Timestamp getStartsAt();
 
