@@ -19,7 +19,7 @@ class GameController {
 
     @GetMapping("/start/{id}")
     @UserAuthority
-    public ResponseEntity<StartQuizDto> startQuiz(@PathVariable long id) {
+    public ResponseEntity<StartQuizDto> startQuiz(@PathVariable Long id) {
         return ResponseEntity.ok(gameService.startQuiz(id));
     }
 
