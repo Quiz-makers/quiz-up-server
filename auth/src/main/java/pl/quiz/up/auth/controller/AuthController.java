@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.catalina.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.quiz.up.auth.dto.AuthRequest;
-import pl.quiz.up.auth.dto.EmailValidationRequestDto;
-import pl.quiz.up.auth.dto.RegisterRequest;
-import pl.quiz.up.auth.dto.UserNameValidationRequestDto;
+import pl.quiz.up.auth.dto.*;
 import pl.quiz.up.auth.service.UserInfoService;
+import pl.quiz.up.common.config.UserInfoUserDetails;
 import pl.quiz.up.common.entity.UserInfo;
 import pl.quiz.up.common.exception.dto.ValidationErrorList;
 import pl.quiz.up.common.mapper.DTO;
@@ -43,7 +42,15 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtService.generateToken(authRequest.getEmail())).build();
+            UserInfoUserDetails details = (UserInfoUserDetails) authentication.getPrincipal();
+            AuthResponse response = AuthResponse.builder()
+                    .name(details.getName())
+                    .surname(details.getSurname())
+                    .userName(details.getUserName())
+                    .build();
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.AUTHORIZATION, jwtService.generateToken(authRequest.getEmail()))
+                    .body(response);
         } else {
             ValidationErrorList body = ValidationErrorList.of(AuthRequest.Fields.password, Translator.translate(MessagesEnum.INVALID_EMAIL_OR_PASSWORD));
             return body.createResponseEntity();

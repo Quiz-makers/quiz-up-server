@@ -1,6 +1,7 @@
 package pl.quiz.up.common.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,15 @@ import java.util.stream.Collectors;
 public class UserInfoUserDetails implements UserDetails {
     private final String email;
     private final String password;
+
+    @Getter
+    private final String name;
+
+    @Getter
+    private final String surname;
+
+    @Getter
+    private final String userName;
     @Getter
     private final Long id;
     private final List<GrantedAuthority> authorities;
@@ -21,6 +31,9 @@ public class UserInfoUserDetails implements UserDetails {
         email = userInfo.getEmail();
         id = userInfo.getId();
         password = userInfo.getPassword();
+        name = userInfo.getName();
+        surname = userInfo.getSurname();
+        userName = userInfo.getUserName();
         authorities = userInfo.getRoles()
                 .stream()
                 .map(Enum::name)
