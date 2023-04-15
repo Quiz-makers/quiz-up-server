@@ -9,5 +9,6 @@ public class QuizAnswerEntityToAnswerDto extends PropertyMap<QuizAnswerEntity, A
     protected void configure() {
         map().setId(source.getAnswerId());
         map().setAnswer(source.getAnswer());
+        map().setIsCorrect(source.getCorrect());
     }
 }

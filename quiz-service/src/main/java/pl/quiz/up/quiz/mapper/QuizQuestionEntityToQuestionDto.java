@@ -5,6 +5,8 @@ import pl.quiz.up.quiz.mapper.converter.QuizAnswerEntitySetToAnswerDtoSet;
 import pl.quiz.up.quiz.dto.response.QuestionDto;
 import pl.quiz.up.quiz.entity.QuizQuestionEntity;
 
+import java.util.Base64;
+
 public class QuizQuestionEntityToQuestionDto extends PropertyMap<QuizQuestionEntity, QuestionDto> {
 
 
@@ -12,6 +14,7 @@ public class QuizQuestionEntityToQuestionDto extends PropertyMap<QuizQuestionEnt
     protected void configure() {
         map().setQuestionId(source.getQuestionId());
         map().setQuestion(source.getQuestion());
+        map().setImage(Base64.getEncoder().encodeToString(source.getQuestionImage()));
         using(new QuizAnswerEntitySetToAnswerDtoSet()).map(source.getQuizAnswerEntities()).setAnswerDtoSet(null);
     }
 }

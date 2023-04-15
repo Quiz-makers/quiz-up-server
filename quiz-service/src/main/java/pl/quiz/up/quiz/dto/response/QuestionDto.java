@@ -12,6 +12,7 @@ import java.util.Set;
 public class QuestionDto {
     private Long questionId;
     private String question;
+    private String image;
     private Set<AnswerDto> answerDtoSet;
 
 }
