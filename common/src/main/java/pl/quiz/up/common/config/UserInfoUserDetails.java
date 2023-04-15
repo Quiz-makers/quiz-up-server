@@ -21,7 +21,6 @@ public class UserInfoUserDetails implements UserDetails {
     @Getter
     private final String surname;
 
-    @Getter
     private final String userName;
     @Getter
     private final Long id;
@@ -49,6 +48,10 @@ public class UserInfoUserDetails implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     @Override
