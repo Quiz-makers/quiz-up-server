@@ -8,10 +8,14 @@ import pl.quiz.up.quiz.dto.QuizFullWriteDto;
 import pl.quiz.up.quiz.dto.response.CategoriesDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.dto.response.QuizTypesDto;
+import pl.quiz.up.quiz.entity.FavoriteQuizzesEntity;
 import pl.quiz.up.quiz.entity.QuizEntity;
 import pl.quiz.up.quiz.entity.QuizQuestionEntity;
+import pl.quiz.up.quiz.entity.SharedQuizzesEntity;
+import pl.quiz.up.quiz.entity.composedKey.FavoriteQuizzesId;
+import pl.quiz.up.quiz.entity.composedKey.SharedQuizzesId;
 import pl.quiz.up.quiz.exception.NotFoundException;
-import pl.quiz.up.quiz.exception.QuizTitleAlreadyExistsException;
+import pl.quiz.up.quiz.exception.AlreadyExistsException;
 import pl.quiz.up.quiz.repository.SqlQuizAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.*;
 
@@ -32,6 +36,10 @@ public class QuizService {
 
     private final SqlQuizAnswerRepository quizAnswerRepository;
 
+    private final FavoriteQuizzesRepository favoriteQuizzesRepository;
+
+    private final SharedQuizzesRepository sharedQuizzesRepository;
+
     private final ModelMapper modelMapper;
 
     @Transactional
@@ -47,7 +55,7 @@ public class QuizService {
 
             quizRepository.save(quiz);
         } else {
-            throw new QuizTitleAlreadyExistsException(String.format("Quiz with name '%s' already exists", quiz.getTitle()));
+            throw new AlreadyExistsException(String.format("Quiz with name '%s' already exists", quiz.getTitle()));
         }
     }
 
@@ -74,8 +82,53 @@ public class QuizService {
                     });
 
         } else {
-            throw new QuizTitleAlreadyExistsException(String.format("Quiz with name '%s' already exists", quizDto.getTitle()));
+            throw new AlreadyExistsException(String.format("Quiz with name '%s' already exists", quizDto.getTitle()));
         }
+    }
+
+    @Transactional
+    public void addQuizToFavorites(final Long requestorId, final long quidId) {
+
+        FavoriteQuizzesId favoriteQuizzesId =
+                FavoriteQuizzesId.builder()
+                        .userId(requestorId)
+                        .quizId(quidId)
+                        .build();
+
+        if(!favoriteQuizzesRepository.existsById(favoriteQuizzesId)) {
+            if (quizRepository.checkIfOperationOnFavoritesMatchRequirements(requestorId, quidId)) {
+                favoriteQuizzesRepository.save(
+                        FavoriteQuizzesEntity.builder()
+                                .id(favoriteQuizzesId)
+                                .build());
+            } else
+                throw new NotFoundException(String.format("No quiz with quizId '%s' available", quidId));
+        } else
+            throw new AlreadyExistsException(String.format("The quiz is already present in favorites"));
+    }
+
+    @Transactional
+    public QuizDto addQuizByQuizCode(final Long requestorId, final String quizCode) {
+
+        QuizDto quizDto = quizRepository
+                    .findQuizByQuizCode(requestorId, quizCode)
+                    .orElseThrow(() -> new NotFoundException("No quiz found for quizCode: " + quizCode));
+
+        SharedQuizzesId sharedQuizzesId =
+                SharedQuizzesId.builder()
+                .userId(requestorId)
+                .quizId(quizDto.getQuizId())
+                .build();
+
+        if(!sharedQuizzesRepository.existsById(sharedQuizzesId)) {
+
+            sharedQuizzesRepository.save(SharedQuizzesEntity.builder()
+                    .id(sharedQuizzesId)
+                    .build());
+        } else
+            throw new AlreadyExistsException(String.format("The quiz '%s' already exists in the collection", quizDto.getTitle()));
+
+        return quizDto;
     }
 
     public QuizDto getQuizById(final Long requestorId, long quizId) {
@@ -110,9 +163,34 @@ public class QuizService {
                 .findAllUserQuizzes(requestorId);
     }
 
+    public Set<QuizDto> getAllUserFavoriteQuizzes(final Long requestorId) {
+        return quizRepository
+                .findAllUserFavoriteQuizzes(requestorId);
+    }
+
+    public Set<QuizDto> getAllUserMutualQuizzes(final Long requestorId) {
+        return quizRepository
+                .findAllUserMutualQuizzes(requestorId);
+    }
+
     public Set<QuizDto> getAllPublicQuizzesFromGivenCategory(final Long requestorId, final String category) {
         return quizRepository
                 .findAllPubliclyAvailableFromGivenCategory(requestorId, category);
+    }
+
+    @Transactional
+    public void deleteQuizFromFavorites(final Long requestorId, final long quidId) {
+
+        FavoriteQuizzesId favoriteQuizzesId =
+                FavoriteQuizzesId.builder()
+                        .userId(requestorId)
+                        .quizId(quidId)
+                        .build();
+
+        if(favoriteQuizzesRepository.existsById(favoriteQuizzesId)) {
+                favoriteQuizzesRepository.deleteById(favoriteQuizzesId);
+        } else
+            throw new NotFoundException(String.format("No quiz with quizId '%s' in favorites", quidId));
     }
 
     private String generateQuizSlug(String title) {
