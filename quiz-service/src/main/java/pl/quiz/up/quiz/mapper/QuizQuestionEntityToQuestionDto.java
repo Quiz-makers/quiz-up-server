@@ -14,7 +14,7 @@ public class QuizQuestionEntityToQuestionDto extends PropertyMap<QuizQuestionEnt
     protected void configure() {
         map().setQuestionId(source.getQuestionId());
         map().setQuestion(source.getQuestion());
-        map().setImage(Base64.getEncoder().encodeToString(source.getQuestionImage()));
+        skip().setImage(null);
         using(new QuizAnswerEntitySetToAnswerDtoSet()).map(source.getQuizAnswerEntities()).setAnswerDtoSet(null);
     }
 }
