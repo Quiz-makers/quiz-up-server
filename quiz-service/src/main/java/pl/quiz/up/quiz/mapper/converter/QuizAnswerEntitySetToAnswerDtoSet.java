@@ -10,10 +10,19 @@ import java.util.stream.Collectors;
 
 public class QuizAnswerEntitySetToAnswerDtoSet extends AbstractConverter<Set<QuizAnswerEntity>, Set<AnswerDto>> {
 
+
     @Override
     protected Set<AnswerDto> convert(Set<QuizAnswerEntity> quizAnswerEntities) {
         return quizAnswerEntities.stream()
-                .map(item -> ModelMapperConfig.modelMapper.map(item, AnswerDto.class))
+                .map(this::map)
                 .collect(Collectors.toSet());
+    }
+
+    private AnswerDto map(QuizAnswerEntity source) {
+        return AnswerDto.builder()
+                .id(source.getAnswerId())
+                .answer(source.getAnswer())
+                .isCorrect(source.getCorrect())
+                .build();
     }
 }

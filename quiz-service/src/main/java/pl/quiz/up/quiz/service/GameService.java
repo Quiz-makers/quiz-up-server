@@ -5,14 +5,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.quiz.up.common.utils.AuthenticationUtils;
+import pl.quiz.up.quiz.config.ModelMapperConfig;
 import pl.quiz.up.quiz.dto.request.FinishQuizAnswerDto;
 import pl.quiz.up.quiz.dto.request.FinishQuizDto;
+import pl.quiz.up.quiz.dto.response.AnswerDto;
+import pl.quiz.up.quiz.dto.response.QuestionDto;
 import pl.quiz.up.quiz.dto.response.QuizResultDto;
 import pl.quiz.up.quiz.dto.response.StartQuizDto;
-import pl.quiz.up.quiz.entity.QuizAnswerEntity;
-import pl.quiz.up.quiz.entity.TakeAnswerEntity;
-import pl.quiz.up.quiz.entity.TakeEntity;
+import pl.quiz.up.quiz.entity.*;
 import pl.quiz.up.quiz.exception.NotFoundException;
+import pl.quiz.up.quiz.mapper.converter.QuizAnswerEntitySetToAnswerDtoSet;
 import pl.quiz.up.quiz.repository.facade.QuizAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.QuizRepository;
 import pl.quiz.up.quiz.repository.facade.TakeAnswerRepository;
@@ -20,7 +22,11 @@ import pl.quiz.up.quiz.repository.facade.TakeRepository;
 import pl.quiz.up.quiz.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +37,8 @@ public class GameService {
     private final TakeAnswerRepository takeAnswerRepository;
     private final ModelMapper modelMapper;
 
-    @Transactional
     public StartQuizDto startQuiz(long id) {
-        return quizRepository
-                .findByQuizId(id)
+        return quizRepository.findByQuizId(id)
                 .map(item -> modelMapper.map(item, StartQuizDto.class))
                 .orElseThrow(() -> new NotFoundException("Quiz not found with id: " + id));
     }

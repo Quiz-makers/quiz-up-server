@@ -60,7 +60,7 @@ public class QuizQuestionEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp updatedAt;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizQuestionEntity")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "quizQuestionEntity")
     private Set<QuizAnswerEntity> quizAnswerEntities;
 
     @ManyToOne

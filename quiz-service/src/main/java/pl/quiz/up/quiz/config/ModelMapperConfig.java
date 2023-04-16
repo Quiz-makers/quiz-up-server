@@ -1,6 +1,8 @@
 package pl.quiz.up.quiz.config;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import pl.quiz.up.quiz.mapper.*;
@@ -8,20 +10,18 @@ import pl.quiz.up.quiz.mapper.*;
 @Component
 public class ModelMapperConfig {
 
-    public static ModelMapper modelMapper = new ModelMapper();
 
     @Bean
     public ModelMapper modelMapper() {
-        setup();
-        return modelMapper;
-    }
-
-    private void setup() {
-        modelMapper.addMappings(new QuizAnswerEntityToAnswerDto());
-        modelMapper.addMappings(new QuizQuestionEntityToQuestionDto());
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
         modelMapper.addMappings(new QuizEntityToStartQuizDto());
         modelMapper.addMappings(new QuizCategoryEntityToCategoriesDto());
         modelMapper.addMappings(new QuizTypeEntityToQuizTypesDto());
+        return modelMapper;
     }
+
+
 
 }

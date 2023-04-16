@@ -10,10 +10,10 @@ import pl.quiz.up.quiz.dto.response.QuizResultDto;
 import pl.quiz.up.quiz.dto.response.StartQuizDto;
 import pl.quiz.up.quiz.service.GameService;
 
-@RestController
+@RestController("/game")
 @RequiredArgsConstructor
 @Log4j2
-class GameController {
+public class GameController {
 
     private final GameService gameService;
 

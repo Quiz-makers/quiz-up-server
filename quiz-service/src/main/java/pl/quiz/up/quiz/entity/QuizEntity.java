@@ -99,7 +99,4 @@ public class QuizEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizEntity")
     private Set<QuizQuestionEntity> quizQuestionEntities;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizEntity")
-    private Set<QuizAnswerEntity> quizAnswerEntities;
-
 }
