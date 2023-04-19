@@ -24,9 +24,8 @@ public class QuizFullAnswerWriteDto {
     @NotNull(message = Messages.EMPTY_FIELD)
     private Boolean active;
 
-    public QuizAnswerEntity toQuizAnswerEntity(QuizEntity parentQuiz, QuizQuestionEntity parentQuestion) {
+    public QuizAnswerEntity toQuizAnswerEntity(QuizQuestionEntity parentQuestion) {
         return QuizAnswerEntity.builder()
-                .quizEntity(parentQuiz)
                 .quizQuestionEntity(parentQuestion)
                 .answer(this.answer)
                 .correct(this.correct)

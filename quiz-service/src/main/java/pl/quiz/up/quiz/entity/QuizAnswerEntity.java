@@ -1,10 +1,7 @@
 package pl.quiz.up.quiz.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,7 +10,8 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "quiz_answer", schema = "public", catalog = "quiz_db")
 public class QuizAnswerEntity {
@@ -54,9 +52,4 @@ public class QuizAnswerEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="question_id", nullable=false)
     private QuizQuestionEntity quizQuestionEntity;
-
-    @ManyToOne
-    @JoinColumn(name="quiz_id", nullable=false)
-    private QuizEntity quizEntity;
-
 }

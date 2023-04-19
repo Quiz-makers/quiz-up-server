@@ -1,20 +1,20 @@
 package pl.quiz.up.quiz.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "quiz", schema = "public", catalog = "quiz_db")
 public class QuizEntity {
@@ -96,7 +96,7 @@ public class QuizEntity {
     @Column(name = "ends_at")
     private Timestamp endsAt;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizEntity")
-    private Set<QuizQuestionEntity> quizQuestionEntities;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizEntity", cascade = CascadeType.ALL)
+    private List<QuizQuestionEntity> quizQuestionEntities;
 
 }

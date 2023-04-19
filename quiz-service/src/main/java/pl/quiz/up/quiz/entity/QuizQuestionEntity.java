@@ -1,20 +1,19 @@
 package pl.quiz.up.quiz.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "quiz_question", schema = "public", catalog = "quiz_db")
 public class QuizQuestionEntity {
@@ -60,11 +59,11 @@ public class QuizQuestionEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "quizQuestionEntity")
-    private Set<QuizAnswerEntity> quizAnswerEntities;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "quizQuestionEntity")
+    private List<QuizAnswerEntity> quizAnswerEntities;
 
-    @ManyToOne
-    @JoinColumn(name="quiz_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="quiz_id")
     private QuizEntity quizEntity;
 
 }

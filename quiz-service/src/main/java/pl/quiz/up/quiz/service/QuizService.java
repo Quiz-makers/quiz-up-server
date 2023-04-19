@@ -77,7 +77,7 @@ public class QuizService {
 
                         quizAnswerRepository.saveAll(
                                 questionWithAnswers.getQuestionAnswersEntities().stream()
-                                        .map(answer -> answer.toQuizAnswerEntity(savedQuiz, savedQuestion))
+                                        .map(answer -> answer.toQuizAnswerEntity(savedQuestion))
                                         .collect(Collectors.toList()));
                     });
 

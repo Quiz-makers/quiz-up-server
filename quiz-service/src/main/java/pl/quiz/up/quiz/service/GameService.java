@@ -15,16 +15,14 @@ import pl.quiz.up.quiz.dto.response.StartQuizDto;
 import pl.quiz.up.quiz.entity.*;
 import pl.quiz.up.quiz.exception.NotFoundException;
 import pl.quiz.up.quiz.mapper.converter.QuizAnswerEntitySetToAnswerDtoSet;
+import pl.quiz.up.quiz.repository.SqlQuizRepository;
 import pl.quiz.up.quiz.repository.facade.QuizAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.QuizRepository;
 import pl.quiz.up.quiz.repository.facade.TakeAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.TakeRepository;
 import pl.quiz.up.quiz.utils.Constants;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,13 +30,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GameService {
 
-    private final QuizRepository quizRepository;
+    private final SqlQuizRepository quizRepository;
     private final QuizAnswerRepository answerRepository;
     private final TakeAnswerRepository takeAnswerRepository;
     private final ModelMapper modelMapper;
 
     public StartQuizDto startQuiz(long id) {
-        return quizRepository.findByQuizId(id)
+        return quizRepository.findById(id)
                 .map(item -> modelMapper.map(item, StartQuizDto.class))
                 .orElseThrow(() -> new NotFoundException("Quiz not found with id: " + id));
     }
