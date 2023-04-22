@@ -10,6 +10,7 @@ import pl.quiz.up.common.messages.Messages;
 import pl.quiz.up.quiz.entity.QuizEntity;
 import pl.quiz.up.quiz.entity.QuizQuestionEntity;
 
+import java.util.Base64;
 import java.util.Set;
 
 
@@ -24,7 +25,7 @@ public class QuizFullQuestionWithAnswersWriteDto {
     @NotBlank(message = Messages.EMPTY_FIELD)
     private String question;
 
-    private byte[] questionImage;
+    private String questionImage;
 
     @NotNull(message = Messages.EMPTY_FIELD)
     private Short score;
@@ -47,7 +48,7 @@ public class QuizFullQuestionWithAnswersWriteDto {
                 .quizEntity(parentQuiz)
                 .type(this.type)
                 .question(this.question)
-                .questionImage(this.questionImage)
+                .questionImage(Base64.getDecoder().decode(this.questionImage))
                 .score(this.score)
                 .difficultyLevel(this.difficultyLevel)
                 .visibleInQuiz(this.visibleInQuiz)
