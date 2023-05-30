@@ -28,7 +28,7 @@ public class UserInfoService {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    protected void validate(UserInfo userInfo) {
+    public void validate(UserInfo userInfo) {
         ValidationErrorList validationErrorList = ValidationErrorList.empty();
         if (doEmailExists(userInfo.getEmail()))
             validationErrorList.add(UserInfo.Fields.email, MessagesEnum.EXISTS_EMAIL);
