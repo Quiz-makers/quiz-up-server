@@ -15,7 +15,3 @@ The application consists of the following layers:
 - repository - contains repository classes that are responsible for communicating with the database and performing CRUD operations on entities.
 - service - contains service classes that are responsible for the business logic of the application and use repositories to communicate with the database.
 - utils - contains utility classes such as the class responsible for generating tokens or the class with methods for handling dates, etc.
-
-Application UML diagram
-
-![quiz-service UML diagram](./quiz-service-uml-diagram.png)
