@@ -1,6 +1,7 @@
 package pl.quiz.up.quiz.battle.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class QuestionResult {
 
     @Data
     @AllArgsConstructor
-    public static class Result{
+    public static class Result {
         private String userName;
         private Boolean correct;
     }

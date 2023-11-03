@@ -6,27 +6,18 @@ import org.springframework.stereotype.Component;
 import pl.quiz.up.quiz.battle.dto.AnswerMessage;
 import pl.quiz.up.quiz.battle.listener.ClientRequestListener;
 import pl.quiz.up.quiz.battle.listener.ConnectListenerImpl;
+import pl.quiz.up.quiz.battle.listener.DisconnectListenerImpl;
+
+import static pl.quiz.up.quiz.battle.utils.Constants.EVENT_BATTLE_ANSWER;
 
 @Component
 @Slf4j
 public class SocketModule {
 
-    public SocketModule(SocketIOServer server, ConnectListenerImpl connectListenerImpl, ClientRequestListener clientRequestListener) {
+    public SocketModule(SocketIOServer server, ConnectListenerImpl connectListenerImpl, ClientRequestListener clientRequestListener, DisconnectListenerImpl disconnectListener) {
         server.addConnectListener(connectListenerImpl);
-        server.addEventListener("battle_answer", AnswerMessage.class, clientRequestListener);
+        server.addDisconnectListener(disconnectListener);
+        server.addEventListener(EVENT_BATTLE_ANSWER, AnswerMessage.class, clientRequestListener);
         server.start();
     }
-
-
-//    private DisconnectListener onDisconnected() {
-//        return client -> {
-//            var params = client.getHandshakeData().getUrlParams();
-//            String room = params.get("room").stream().collect(Collectors.joining());
-//            String username = params.get("username").stream().collect(Collectors.joining());
-//            socketService.saveInfoMessage(client, String.format(Constants.DISCONNECT_MESSAGE, username), room);
-//            log.info("Socket ID[{}] - room[{}] - username [{}]  discnnected to chat module through", client.getSessionId().toString(), room, username);
-//        };
-//    }
-
-
 }

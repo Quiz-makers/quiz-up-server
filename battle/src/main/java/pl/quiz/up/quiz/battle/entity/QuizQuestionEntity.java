@@ -62,7 +62,7 @@ public class QuizQuestionEntity {
     private List<QuizAnswerEntity> quizAnswerEntities;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="quiz_id")
+    @JoinColumn(name = "quiz_id")
     private QuizEntity quizEntity;
 
 }

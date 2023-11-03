@@ -1,41 +1,43 @@
 package pl.quiz.up.quiz.battle.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
+@Data
 @Entity
-@Table(name = "quiz_answer", schema = "public", catalog = "quiz_db")
-public class QuizAnswerEntity {
+@Table(name = "take_answer", schema = "public", catalog = "quiz_db")
+public class TakeAnswerEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Basic
+    @Column(name = "question_id")
+    private Long questionId;
+
+    @Basic
     @Column(name = "answer_id")
     private Long answerId;
 
-//    @Basic
-//    @Column(name = "quiz_id")
-//    private Long quizId;
+    @Basic
+    @Column(name = "open_text_answer")
+    private String openTextAnswer;
 
     @Basic
-    @Column(name = "answer")
-    private String answer;
-
-    @Basic
-    @Column(name = "correct")
-    private Boolean correct;
-
-    @Basic
-    @Column(name = "active")
-    private Boolean active;
+    @Column(name = "most_actual_answer")
+    private Boolean mostActualAnswer;
 
     @Basic
     @Column(name = "created_at")
@@ -49,7 +51,4 @@ public class QuizAnswerEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private QuizQuestionEntity quizQuestionEntity;
 }

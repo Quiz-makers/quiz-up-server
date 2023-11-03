@@ -10,80 +10,93 @@ import pl.quiz.up.quiz.battle.enums.ServerInfo;
 import pl.quiz.up.quiz.battle.repository.QuizQuestionRepository;
 import pl.quiz.up.quiz.battle.utils.SocketClientUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static pl.quiz.up.quiz.battle.utils.Constants.*;
 
 @Log4j2
 public class Battle implements Runnable {
-    private Thread thread;
     private final BattleRoom battleRoom;
-    private final DataBus dataBus;
     private final QuizQuestionRepository quizQuestionRepository;
-    private List<QuestionMessage> quizQuestionMessage;
     private final Map<SocketIOClient, Integer> scoreResult = new HashMap<>();
+    private Thread thread;
+    private List<QuestionMessage> quizQuestionMessage;
 
 
-    public Battle(BattleRoom battleRoom, DataBus dataBus, QuizQuestionRepository quizQuestionRepository) {
+    public Battle(BattleRoom battleRoom,  QuizQuestionRepository quizQuestionRepository) {
         this.battleRoom = battleRoom;
-        this.dataBus = dataBus;
         this.quizQuestionRepository = quizQuestionRepository;
         scoreResult.put(this.battleRoom.getFirstClient(), 0);
         scoreResult.put(this.battleRoom.getSecondClient(), 0);
     }
 
+    private static Function<QuizAnswerEntity, AnswerDto> mapAnswer() {
+        return answer -> AnswerDto.builder()
+                .id(answer.getAnswerId())
+                .answer(answer.getAnswer())
+                .isCorrect(answer.getCorrect())
+                .build();
+    }
+
     @Override
     public void run() {
-        battleRoom.getFirstClient().joinRoom(battleRoom.getUuid());
-        battleRoom.getSecondClient().joinRoom(battleRoom.getUuid());
-
-        battleRoom.getFirstClient().sendEvent("server_message", new ServerMessage(ServerInfo.IN_BATTLE_ROOM, "You have been added to the battle room", new Date()));
-        battleRoom.getSecondClient().sendEvent("server_message", new ServerMessage(ServerInfo.IN_BATTLE_ROOM, "You have been added to the battle room", new Date()));
+        addUsersToBattle();
         loadQuestions();
 
         for (QuestionMessage question : this.quizQuestionMessage) {
-            battleRoom.getFirstClient().sendEvent("battle", question);
-            battleRoom.getSecondClient().sendEvent("battle", question);
+            battleRoom.getFirstClient().sendEvent(EVENT_BATTLE_MESSAGE, question);
+            battleRoom.getSecondClient().sendEvent(EVENT_BATTLE_MESSAGE, question);
             try {
                 Thread.sleep(10_000);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
             }
-            AnswerMessage firstAnswer = dataBus.getMessage(battleRoom.getFirstClient());
-            AnswerMessage secondAnswer = dataBus.getMessage(battleRoom.getSecondClient());
-            AnswerDto correct = question.getAnswers().stream().filter(AnswerDto::getIsCorrect).findFirst().get();
+            AnswerMessage firstAnswer = battleRoom.getFirstClient().get(ANSWER_STORE_KEY);
+            AnswerMessage secondAnswer = battleRoom.getSecondClient().get(ANSWER_STORE_KEY);
+            AnswerDto correct = question.getAnswers().stream().filter(AnswerDto::getIsCorrect).findFirst().orElseThrow();
             boolean firstClientCorrect = Boolean.FALSE;
             boolean secondClientCorrect = Boolean.FALSE;
 
             if (firstAnswer != null && (firstAnswer.getId() == correct.getId())) {
-                    int score = this.scoreResult.get(battleRoom.getFirstClient());
-                    score++;
-                    this.scoreResult.put(battleRoom.getFirstClient(), score);
-                    firstClientCorrect = Boolean.TRUE;
+                int score = this.scoreResult.get(battleRoom.getFirstClient());
+                score++;
+                this.scoreResult.put(battleRoom.getFirstClient(), score);
+                firstClientCorrect = Boolean.TRUE;
             }
 
             if (secondAnswer != null && (secondAnswer.getId() == correct.getId())) {
-                    int score = this.scoreResult.get(battleRoom.getSecondClient());
-                    score++;
-                    this.scoreResult.put(battleRoom.getSecondClient(), score);
-                    secondClientCorrect = Boolean.TRUE;
+                int score = this.scoreResult.get(battleRoom.getSecondClient());
+                score++;
+                this.scoreResult.put(battleRoom.getSecondClient(), score);
+                secondClientCorrect = Boolean.TRUE;
             }
 
             QuestionResult questionResult = resultResponse(battleRoom.getFirstClient(), firstClientCorrect, battleRoom.getSecondClient(), secondClientCorrect);
-            battleRoom.getFirstClient().sendEvent("battle", questionResult);
-            battleRoom.getSecondClient().sendEvent("battle", questionResult);
+            battleRoom.getFirstClient().sendEvent(EVENT_BATTLE_MESSAGE, questionResult);
+            battleRoom.getSecondClient().sendEvent(EVENT_BATTLE_MESSAGE, questionResult);
 
             try {
                 Thread.sleep(5_000);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
             }
         }
 
-
         battleRoom.getFirstClient().disconnect();
         battleRoom.getSecondClient().disconnect();
+    }
 
+    private void addUsersToBattle() {
+        battleRoom.getFirstClient().leaveRoom(BATTLE_ROOM);
+        battleRoom.getSecondClient().leaveRoom(BATTLE_ROOM);
+        battleRoom.getFirstClient().joinRoom(battleRoom.getUuid());
+        battleRoom.getSecondClient().joinRoom(battleRoom.getUuid());
+        battleRoom.getFirstClient().sendEvent(EVENT_SERVER_MESSAGE, ServerMessage.of(ServerInfo.IN_BATTLE_ROOM));
+        battleRoom.getSecondClient().sendEvent(EVENT_SERVER_MESSAGE, ServerMessage.of(ServerInfo.IN_BATTLE_ROOM));
     }
 
     private QuestionResult resultResponse(SocketIOClient firstClient, Boolean firstClientCorrectAnswer, SocketIOClient secondClient, Boolean secondClientCorrectAnswer) {
@@ -106,18 +119,10 @@ public class Battle implements Runnable {
             QuestionMessage message = QuestionMessage.builder()
                     .id(quizQuestionEntity.getQuestionId())
                     .question(quizQuestionEntity.getQuestion())
-                    .answers(quizQuestionEntity.getQuizAnswerEntities().stream().map(mapAnswer()).collect(Collectors.toList()))
+                    .answers(quizQuestionEntity.getQuizAnswerEntities().stream().map(mapAnswer()).toList())
                     .build();
             this.quizQuestionMessage.add(message);
         }
 
-    }
-
-    private static Function<QuizAnswerEntity, AnswerDto> mapAnswer() {
-        return answer -> AnswerDto.builder()
-                .id(answer.getAnswerId())
-                .answer(answer.getAnswer())
-                .isCorrect(answer.getCorrect())
-                .build();
     }
 }

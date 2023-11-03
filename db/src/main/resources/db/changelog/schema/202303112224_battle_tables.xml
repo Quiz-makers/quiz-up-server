@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="202303112224-0" author="korbecki">
+        <createTable tableName="battle" remarks="Used to store result of battles">
+            <column name="battle_id" type="bigserial" remarks="The unique id to identify the battle">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_user_id" type="BIGINT" remarks="The first user id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="second_user_id" type="BIGINT" remarks="The second user id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the role is created">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_battle_first_user_system_user"
+                baseTableName="battle"
+                baseColumnNames="first_user_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+        <addForeignKeyConstraint
+                constraintName="fk_battle_second_user_system_user"
+                baseTableName="battle"
+                baseColumnNames="second_user_id"
+                referencedTableName="system_user"
+                referencedColumnNames="user_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+    </changeSet>
+
+    <changeSet id="202303112224-1" author="korbecki">
+        <createTable tableName="battle_take_answer" remarks="Used to store result of battles">
+            <column name="battle_take_answer_id" type="BIGSERIAL" remarks="The unique id to identify the battle">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="battle_id" type="BIGINT" remarks="Identity to battle table">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_user_take_answer_id" type="BIGINT" remarks="The first user answer id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="second_user_take_answer_id" type="BIGINT" remarks="The second user answer id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" remarks="Stores the date and time at which the role is created">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_battle_take_answer_battle"
+                baseTableName="battle_take_answer"
+                baseColumnNames="battle_id"
+                referencedTableName="battle"
+                referencedColumnNames="battle_id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+        <addForeignKeyConstraint
+                constraintName="fk_battle_take_answer_first_take_answer"
+                baseTableName="battle_take_answer"
+                baseColumnNames="first_user_take_answer_id"
+                referencedTableName="take_answer"
+                referencedColumnNames="id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+        <addForeignKeyConstraint
+                constraintName="fk_battle_take_answer_second_second_answer"
+                baseTableName="battle_take_answer"
+                baseColumnNames="second_user_take_answer_id"
+                referencedTableName="take_answer"
+                referencedColumnNames="id"
+                onDelete="NO ACTION"
+                onUpdate="NO ACTION"/>
+    </changeSet>
+
+    <changeSet id="202303112224-2" author="korbecki">
+        <dropNotNullConstraint tableName="take_answer" columnName="take_id"/>
+
+    </changeSet>
+
+
+</databaseChangeLog>

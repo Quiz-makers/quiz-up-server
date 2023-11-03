@@ -11,13 +11,12 @@ import pl.quiz.up.quiz.battle.listener.AuthorizationListenerImpl;
 @RequiredArgsConstructor
 public class SocketIOConfig {
 
+    private final AuthorizationListenerImpl authorizationListener;
     @Value("${socket-server.host}")
     private String host;
-
     @Value("${socket-server.port}")
     private Integer port;
 
-    private final AuthorizationListenerImpl authorizationListener;
     @Bean
     public SocketIOServer socketIOServer() {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();

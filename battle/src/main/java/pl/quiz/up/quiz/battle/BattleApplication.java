@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {"pl.quiz.up.quiz.battle.*", "pl.quiz.up.common.*"})
 @EntityScan(basePackages = {"pl.quiz.up.quiz.battle.*", "pl.quiz.up.common.*"})
-
 @EnableScheduling
 public class BattleApplication {
 

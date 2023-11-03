@@ -9,4 +9,5 @@
     <include file="db/changelog/schema/202304061930_sample_data.xml"/>
     <include file="db/changelog/schema/202304122137_fav_and_shared_quizzes_tables.xml"/>
     <include file="db/changelog/schema/202319042024_remove_constant_answer_quiz.xml"/>
+    <include file="db/changelog/schema/202303112224_battle_tables.xml"/>
 </databaseChangeLog>
