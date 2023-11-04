@@ -1,7 +1,7 @@
 package pl.quiz.up.common.config;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode
 public class UserInfoUserDetails implements UserDetails {
     private final String email;
     private final String password;
@@ -24,7 +25,7 @@ public class UserInfoUserDetails implements UserDetails {
     private final String userName;
     @Getter
     private final Long id;
-    private final List<GrantedAuthority> authorities;
+    private final List<SimpleGrantedAuthority> authorities;
 
     public UserInfoUserDetails(UserInfo userInfo) {
         email = userInfo.getEmail();
@@ -37,7 +38,7 @@ public class UserInfoUserDetails implements UserDetails {
                 .stream()
                 .map(Enum::name)
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

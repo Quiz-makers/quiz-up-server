@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pl.quiz.up.quiz.battle.dto.AnswerMessage;
-import pl.quiz.up.quiz.battle.dto.BattleRoom;
-import pl.quiz.up.quiz.battle.dto.ServerMessage;
+import pl.quiz.up.quiz.battle.dto.client.AnswerMessage;
+import pl.quiz.up.quiz.battle.dto.server.ServerMessage;
 import pl.quiz.up.quiz.battle.enums.ServerInfo;
+import pl.quiz.up.quiz.battle.repository.BattleRepository;
+import pl.quiz.up.quiz.battle.repository.BattleTakeAnswerRepository;
 import pl.quiz.up.quiz.battle.repository.QuizQuestionRepository;
+import pl.quiz.up.quiz.battle.repository.TakeAnswerRepository;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,6 +24,9 @@ import static pl.quiz.up.quiz.battle.utils.Constants.*;
 public class BattleEngine {
     private final ConcurrentLinkedQueue<SocketIOClient> waitingRoomQueue = new ConcurrentLinkedQueue<>();
     private final QuizQuestionRepository quizQuestionRepository;
+    private final BattleRepository battleRepository;
+    private final BattleTakeAnswerRepository battleTakeAnswerRepository;
+    private final TakeAnswerRepository takeAnswerRepository;
 
     public void addToWaitingRoom(SocketIOClient client) {
         client.joinRoom(BATTLE_ROOM);
@@ -43,7 +48,7 @@ public class BattleEngine {
         int pairSize = this.waitingRoomQueue.size() / 2;
         log.info("Started startBattle task, found {} pairs", pairSize);
         for (int i = 0; i < pairSize; i++) {
-            Battle battle = new Battle(createBattleRoom(), quizQuestionRepository);
+            Battle battle = new Battle(createBattleRoom(), quizQuestionRepository, battleRepository, battleTakeAnswerRepository, takeAnswerRepository);
             battle.start();
         }
     }

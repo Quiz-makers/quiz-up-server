@@ -1,4 +1,4 @@
-package pl.quiz.up.quiz.battle.dto;
+package pl.quiz.up.quiz.battle.engine;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import lombok.AllArgsConstructor;

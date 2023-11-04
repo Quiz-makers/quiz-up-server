@@ -3,7 +3,7 @@ package pl.quiz.up.quiz.battle.socket;
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import pl.quiz.up.quiz.battle.dto.AnswerMessage;
+import pl.quiz.up.quiz.battle.dto.client.AnswerMessage;
 import pl.quiz.up.quiz.battle.listener.ClientRequestListener;
 import pl.quiz.up.quiz.battle.listener.ConnectListenerImpl;
 import pl.quiz.up.quiz.battle.listener.DisconnectListenerImpl;

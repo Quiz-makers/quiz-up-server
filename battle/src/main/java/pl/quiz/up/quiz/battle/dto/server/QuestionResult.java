@@ -1,19 +1,20 @@
-package pl.quiz.up.quiz.battle.dto;
+package pl.quiz.up.quiz.battle.dto.server;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 public class QuestionResult {
-    private List<Result> resultList;
+    private Map<String, Result> resultList;
 
     @Data
     @AllArgsConstructor
     public static class Result {
-        private String userName;
+        private long questionId;
+        private Long answerId;
         private Boolean correct;
     }
 }

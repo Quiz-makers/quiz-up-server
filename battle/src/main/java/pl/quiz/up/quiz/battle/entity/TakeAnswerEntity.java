@@ -51,4 +51,6 @@ public class TakeAnswerEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp updatedAt;
 
+    @Column(name = "is_correct")
+    private Boolean isCorrect;
 }

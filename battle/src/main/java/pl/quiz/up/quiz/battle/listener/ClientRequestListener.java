@@ -5,7 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.DataListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.quiz.up.quiz.battle.dto.AnswerMessage;
+import pl.quiz.up.quiz.battle.dto.client.AnswerMessage;
 import pl.quiz.up.quiz.battle.engine.BattleEngine;
 
 @Component

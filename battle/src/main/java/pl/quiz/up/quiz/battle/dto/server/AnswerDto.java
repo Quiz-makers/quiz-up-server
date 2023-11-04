@@ -1,15 +1,16 @@
-package pl.quiz.up.quiz.battle.dto;
+package pl.quiz.up.quiz.battle.dto.server;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class AnswerMessage {
+@AllArgsConstructor
+@Builder
+public class AnswerDto {
     private long id;
     private String answer;
+    private Boolean isCorrect;
 }

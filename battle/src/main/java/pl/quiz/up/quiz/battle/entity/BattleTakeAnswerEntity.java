@@ -17,19 +17,12 @@ public class BattleTakeAnswerEntity {
     @Column(name = "battle_take_answer_id")
     private Long id;
 
+    @Column(name = "battle_id")
+    private Long battleId;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "battle_id")
-    private BattleEntity battleEngine;
+    @Column(name = "first_user_take_answer_id")
+    private Long firstUserTakeAnswer;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "first_user_take_answer_id")
-    private TakeAnswerEntity firstUserTakeAnswer;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "second_user_take_answer_id")
-    private TakeAnswerEntity secondUserTakeAnswer;
+    @Column(name = "second_user_take_answer_id")
+    private Long secondUserTakeAnswer;
 }

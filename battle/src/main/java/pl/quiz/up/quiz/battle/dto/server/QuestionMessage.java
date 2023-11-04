@@ -1,4 +1,4 @@
-package pl.quiz.up.quiz.battle.dto;
+package pl.quiz.up.quiz.battle.dto.server;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
