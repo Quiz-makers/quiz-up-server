@@ -66,3 +66,21 @@ services:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     networks:
       - ${GLOBAL_NETWORK:-services}
+  gpt-service-1:
+    image: ${GROUP_ID}/gpt.service:${GPT_SERVICE_VERSION:-latest}
+    ports:
+      - "8095:8095"
+    user: root
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    #    entrypoint: ['check-auth-server-started.sh']
+    environment:
+      - "SERVER_PORT=8095"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=postgres"
+    volumes:
+      - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
+    networks:
+      - ${GLOBAL_NETWORK:-services}
