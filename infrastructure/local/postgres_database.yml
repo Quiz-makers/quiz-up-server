@@ -5,7 +5,7 @@ networks:
 services:
   postgres_db:
     image: postgres:${POSTGRES_VERSION:-latest}
-    container_name: quiz_up_postgres_db
+    container_name: postgres_db
     environment:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=postgres"

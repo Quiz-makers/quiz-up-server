@@ -47,3 +47,22 @@ services:
       - "QUIZ-SERVICE-1_PORT=8290"
     networks:
       - ${GLOBAL_NETWORK:-services}
+  battle-service-1:
+    image: ${GROUP_ID}/battle.service:${BATTLE_SERVICE_VERSION:-latest}
+    ports:
+      - "8085:8085"
+    user: root
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    #    entrypoint: ['check-auth-server-started.sh']
+    environment:
+      - "SOCKET_SERVER_PORT=8085"
+      - "SOCKET_SERVER_HOST=0.0.0.0"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=postgres"
+    volumes:
+      - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
+    networks:
+      - ${GLOBAL_NETWORK:-services}
