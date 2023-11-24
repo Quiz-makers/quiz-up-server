@@ -1,19 +1,19 @@
 server:
   port: 8095
   servlet:
-    context-path: /
+    context-path: /gptclient
 
 openai-service:
-  api-key: ###### TODO -> ADD ME ##########
+  api-key: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
   gpt-model: gpt-3.5-turbo
   audio-model: whisper-1
   http-client:
     read-timeout: 3000
     connect-timeout: 3000
   urls:
-    base-url: https://api.openai.com/v1
-    chat-url: /chat/completions
-    create-transcription-url: /audio/transcriptions
+    base-url-v1: https://api.openai.com/v1
+    chat-url-v1: /chat/completions
+    create-transcription-url-v1: /audio/transcriptions
 
 logging:
   level:
@@ -22,6 +22,13 @@ logging:
 spring:
   jackson:
     default-property-inclusion: NON_NULL
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 60000 # 1 min
+            readTimeout: 60000 # 1 min
 
 management:
   endpoints:
