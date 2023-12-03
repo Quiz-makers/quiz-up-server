@@ -1,10 +1,18 @@
 package pl.quiz.up.quiz.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.quiz.up.quiz.client.GPTServiceClient;
+import pl.quiz.up.quiz.dto.QuizFullAnswerWriteDto;
+import pl.quiz.up.quiz.dto.QuizFullQuestionWithAnswersWriteDto;
 import pl.quiz.up.quiz.dto.QuizFullWriteDto;
+import pl.quiz.up.quiz.dto.request.QuizFromTitleGenerationDto;
 import pl.quiz.up.quiz.dto.response.CategoriesDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.dto.response.QuizTypesDto;
@@ -16,11 +24,13 @@ import pl.quiz.up.quiz.entity.composedKey.FavoriteQuizzesId;
 import pl.quiz.up.quiz.entity.composedKey.SharedQuizzesId;
 import pl.quiz.up.quiz.exception.NotFoundException;
 import pl.quiz.up.quiz.exception.AlreadyExistsException;
+import pl.quiz.up.quiz.exception.QuizGenerationException;
 import pl.quiz.up.quiz.repository.SqlQuizAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +50,11 @@ public class QuizService {
 
     private final SharedQuizzesRepository sharedQuizzesRepository;
 
+    private final GPTServiceClient gptServiceClient;
+
     private final ModelMapper modelMapper;
+
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public void publishRawQuiz(final Long requestorId, final QuizEntity quiz) {
@@ -63,26 +77,53 @@ public class QuizService {
     public void publishQuizWithQuestionsAndAnswers(final Long requestorId, final QuizFullWriteDto quizDto) {
 
         if(!quizRepository.existsByTitle(quizDto.getTitle())) {
-
-            QuizEntity savedQuiz =
-                    quizRepository.save(
-                            quizDto.toQuizEntity(requestorId, generateQuizCode(), generateQuizSlug(quizDto.getTitle())));
-
-            quizDto.getQuizQuestionsWithAnswersEntities()
-                    .values()
-                    .forEach(questionWithAnswers -> {
-
-                        QuizQuestionEntity savedQuestion =
-                                quizQuestionRepository.save(questionWithAnswers.toQuizQuestionEntity(savedQuiz));
-
-                        quizAnswerRepository.saveAll(
-                                questionWithAnswers.getQuestionAnswersEntities().stream()
-                                        .map(answer -> answer.toQuizAnswerEntity(savedQuestion))
-                                        .collect(Collectors.toList()));
-                    });
-
+            saveQuiz(requestorId, quizDto);
         } else {
             throw new AlreadyExistsException(String.format("Quiz with name '%s' already exists", quizDto.getTitle()));
+        }
+    }
+
+    public QuizDto generateQuizFromTitle(final Long requestorId, QuizFromTitleGenerationDto dto) {
+
+        if(!quizRepository.existsByTitle(dto.getTitle())) {
+
+            ResponseEntity<String> resp = gptServiceClient.generateQuizFromTitle(dto);
+
+            if(resp.getStatusCode() == HttpStatus.OK) {
+                JsonNode jsonNode =
+                    parseJson(resp.getBody()).orElseThrow(() ->
+                        new QuizGenerationException(String.format("Quiz '%s' generation fail. Please try again in a while", dto.getTitle())));
+
+                Map<String, QuizFullQuestionWithAnswersWriteDto> questions =
+                        IntStream.range(0, dto.getNumberOfQuestions())
+                            .boxed()
+                            .collect(Collectors.toMap(
+                                    i -> String.valueOf(i + 1),
+                                    i -> generateQuestion(jsonNode.deepCopy(), dto.getAnswersPerQuestion()),
+                                    (existing, replacement) -> replacement
+                            ));
+
+                QuizFullWriteDto quiz =
+                        QuizFullWriteDto.builder()
+                            .title(jsonNode.get("title").asText())
+                            .summary(jsonNode.get("summary").asText())
+                            .description(jsonNode.get("description").asText())
+                            .type(dto.getType())
+                            .categoryId(dto.getCategoryId())
+                            .publicAvailable(dto.getPublicAvailable())
+                            .quizQuestionsWithAnswersEntities(questions)
+                            .build();
+
+                long id = saveQuiz(requestorId, quiz).getQuizId();
+
+                return quizRepository.findQuiz(requestorId, id) // TODO -> change it to a more efficient solution
+                        .orElseThrow(() -> new NotFoundException("Quiz not found with id: " + id));
+
+            } else {
+                throw new QuizGenerationException(String.format("Quiz '%s' generation fail. Please try again in a while", dto.getTitle()));
+            }
+        } else {
+            throw new AlreadyExistsException(String.format("Quiz with name '%s' already exists", dto.getTitle()));
         }
     }
 
@@ -104,7 +145,7 @@ public class QuizService {
             } else
                 throw new NotFoundException(String.format("No quiz with quizId '%s' available", quidId));
         } else
-            throw new AlreadyExistsException(String.format("The quiz is already present in favorites"));
+            throw new AlreadyExistsException("The quiz is already present in favorites");
     }
 
     @Transactional
@@ -206,6 +247,61 @@ public class QuizService {
                 .toString()
                 .substring(0, 15)
                 .replaceAll("-", "x");
+    }
+
+    private Optional<JsonNode> parseJson(String jsonString) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(jsonString);
+            return Optional.of(jsonNode);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    private QuizEntity saveQuiz(final Long requestorId, final QuizFullWriteDto quizDto) {
+        QuizEntity savedQuiz =
+                quizRepository.save(
+                        quizDto.toQuizEntity(requestorId, generateQuizCode(), generateQuizSlug(quizDto.getTitle())));
+
+        quizDto.getQuizQuestionsWithAnswersEntities()
+                .values()
+                .forEach(questionWithAnswers -> {
+
+                    QuizQuestionEntity savedQuestion =
+                            quizQuestionRepository.save(questionWithAnswers.toQuizQuestionEntity(savedQuiz));
+
+                    quizAnswerRepository.saveAll(
+                            questionWithAnswers.getQuestionAnswersEntities().stream()
+                                    .map(answer -> answer.toQuizAnswerEntity(savedQuestion))
+                                    .collect(Collectors.toList()));
+                });
+        return savedQuiz;
+    }
+
+    private static QuizFullQuestionWithAnswersWriteDto generateQuestion(JsonNode rootNode, int answersPerQuestionNumber) {
+
+        Set<QuizFullAnswerWriteDto> answers = IntStream.range(0, answersPerQuestionNumber)
+                .mapToObj(i -> generateAnswer(rootNode.path("questionAnswersEntities").get(i)))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        return QuizFullQuestionWithAnswersWriteDto.builder()
+                .type(rootNode.path("type").asText())
+                .question(rootNode.path("question").asText())
+                .questionImage(rootNode.path("questionImage").asText())
+                .score((short) rootNode.path("score").asInt())
+                .difficultyLevel((short) rootNode.path("difficultyLevel").asInt())
+                .visibleInQuiz(rootNode.path("visibleInQuiz").asBoolean())
+                .questionAnswersEntities(answers)
+                .build();
+    }
+
+    private static QuizFullAnswerWriteDto generateAnswer(JsonNode answerNode) {
+        return QuizFullAnswerWriteDto.builder()
+                .answer(answerNode.path("answer").asText())
+                .correct(answerNode.path("correct").asBoolean())
+                .active(answerNode.path("active").asBoolean())
+                .build();
     }
 
 }

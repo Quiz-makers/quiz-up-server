@@ -25,6 +25,11 @@ services:
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
       - "SPRING_DATASOURCE_USERNAME=postgres"
       - "SPRING_DATASOURCE_PASSWORD=postgres"
+      - "GPT-SERVICE_HTTP-CLIENT_READ-TIMEOUT=10000"
+      - "GPT-SERVICE_HTTP-CLIENT_CONNECT-TIMEOUT=10000"
+      - "GPT-SERVICE_URLS_BASE-URL=http://gpt-service-1:8095/gptclient"
+      - "GPT-SERVICE_URLS_GENERATE-BY-TITLE=/api/v1/quiz/generate/fromTitle"
+      - "GPT-SERVICE_URLS_GENERATE-BY-TEXT=/api/v1/quiz/generate/fromText"
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     networks:
@@ -36,6 +41,7 @@ services:
     depends_on:
       - auth-service
       - quiz-service-1
+      - gpt-service-1
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     user: root
@@ -45,6 +51,8 @@ services:
       - "AUTH-SERVICE_PORT=8190"
       - "QUIZ-SERVICE-1_HOST=quiz-service-1"
       - "QUIZ-SERVICE-1_PORT=8290"
+      - "GPT-SERVICE-1_HOST=gpt-service-1"
+      - "GPT-SERVICE-1_PORT=8095"
     networks:
       - ${GLOBAL_NETWORK:-services}
   battle-service-1:
@@ -68,8 +76,6 @@ services:
       - ${GLOBAL_NETWORK:-services}
   gpt-service-1:
     image: ${GROUP_ID}/gpt.service:${GPT_SERVICE_VERSION:-latest}
-    ports:
-      - "8095:8095"
     user: root
     depends_on:
       postgres_db:

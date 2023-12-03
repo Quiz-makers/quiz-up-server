@@ -13,14 +13,19 @@
 	<artifactId>gpt-service</artifactId>
 	<version>1.0.0</version>
 	<name>gpt-service</name>
-	<description>OpenAI's GPT service</description>
+	<description>OpenAI's GPT client service</description>
 
 	<properties>
 		<java.version>17</java.version>
-		<spring.cloud.starter.openfeign.version>4.0.2</spring.cloud.starter.openfeign.version>
+		<pl.quiz.up.common.version>1.0.0</pl.quiz.up.common.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>pl.quiz.up</groupId>
+			<artifactId>common</artifactId>
+			<version>${pl.quiz.up.common.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -32,7 +37,15 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
-			<version>${spring.cloud.starter.openfeign.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

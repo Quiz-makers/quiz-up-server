@@ -1,4 +1,4 @@
-package pl.quiz.up.gpt.openaiclient;
+package pl.quiz.up.gpt.client;
 
 import pl.quiz.up.gpt.dto.request.ChatGPTRequest;
 import pl.quiz.up.gpt.dto.request.WhisperTranscriptionRequest;

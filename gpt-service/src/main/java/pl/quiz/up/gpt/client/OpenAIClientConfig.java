@@ -1,4 +1,4 @@
-package pl.quiz.up.gpt.openaiclient;
+package pl.quiz.up.gpt.client;
 
 import feign.Logger;
 import feign.Request;

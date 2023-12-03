@@ -9,6 +9,10 @@ quiz-service-1:
   host: localhost
   port: 8290
 
+gpt-service-1:
+  host: localhost
+  port: 8095
+
 open-api:
   host: localhost
   port: ${server.port}
@@ -27,6 +31,10 @@ spring:
           uri: http://${quiz-service-1.host}:${quiz-service-1.port}/
           predicates:
             - Path=/quizapp/**
+        - id: gpt
+          uri: http://${gpt-service-1.host}:${gpt-service-1.port}/
+          predicates:
+            - Path=/gptclient/**
         - id: openAPI
           uri: http://${open-api.host}:${open-api.port}/
           predicates:
@@ -48,3 +56,5 @@ springdoc:
         name: Authorization Service
       - url: /quizapp/v3/api-docs
         name: Quiz Service
+      - url: /gptclient/v3/api-docs
+        name: GPT Service

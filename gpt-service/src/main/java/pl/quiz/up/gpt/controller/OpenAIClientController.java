@@ -1,5 +1,6 @@
 package pl.quiz.up.gpt.controller;
 
+import pl.quiz.up.common.annotation.UserAuthority;
 import pl.quiz.up.gpt.dto.request.TranscriptionRequest;
 import pl.quiz.up.gpt.dto.response.ChatGPTResponse;
 import pl.quiz.up.gpt.dto.request.ChatRequest;
@@ -20,11 +21,13 @@ public class OpenAIClientController {
 
     private final OpenAIClientService openAIClientService;
 
+    @UserAuthority
     @PostMapping(value = "/chat", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ChatGPTResponse chat(@RequestBody ChatRequest chatRequest){
         return openAIClientService.chat(chatRequest);
     }
 
+    @UserAuthority
     @PostMapping(value = "/transcription", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public WhisperTranscriptionResponse createTranscription(@ModelAttribute TranscriptionRequest transcriptionRequest){
         return openAIClientService.createTranscription(transcriptionRequest);
