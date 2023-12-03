@@ -111,6 +111,9 @@ public class QuizService {
                             .type(dto.getType())
                             .categoryId(dto.getCategoryId())
                             .publicAvailable(dto.getPublicAvailable())
+                            .quizTime(dto.getQuizTime())
+                            .startsAt(dto.getStartsAt())
+                            .endsAt(dto.getEndsAt())
                             .quizQuestionsWithAnswersEntities(questions)
                             .build();
 

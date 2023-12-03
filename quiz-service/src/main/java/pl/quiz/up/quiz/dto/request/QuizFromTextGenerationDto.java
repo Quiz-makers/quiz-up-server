@@ -6,6 +6,7 @@ import pl.quiz.up.common.messages.Messages;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Data
 public class QuizFromTextGenerationDto implements Serializable {
@@ -27,5 +28,11 @@ public class QuizFromTextGenerationDto implements Serializable {
 
     @NotNull(message = Messages.EMPTY_FIELD)
     private Boolean publicAvailable;
+
+    private Long quizTime;
+
+    private Timestamp startsAt;
+
+    private Timestamp endsAt;
 
 }
