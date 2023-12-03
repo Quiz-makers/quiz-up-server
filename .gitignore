@@ -151,6 +151,7 @@
 **/grafana
 
 ######################
-# ignore local enviroment containers data
+# ignore local enviroment files
 ######################
 infrastructure/local/containers-data/
+infrastructure/local/.env
