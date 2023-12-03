@@ -9,8 +9,8 @@ services:
     environment:
       - "SERVER_PORT=8190"
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
-      - "SPRING_DATASOURCE_USERNAME=postgres"
-      - "SPRING_DATASOURCE_PASSWORD=postgres"
+      - "SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}"
+      - "SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}"
     networks:
       - ${GLOBAL_NETWORK:-services}
   quiz-service-1:
@@ -23,8 +23,8 @@ services:
     environment:
       - "SERVER_PORT=8290"
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
-      - "SPRING_DATASOURCE_USERNAME=postgres"
-      - "SPRING_DATASOURCE_PASSWORD=postgres"
+      - "SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}"
+      - "SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}"
       - "GPT-SERVICE_HTTP-CLIENT_READ-TIMEOUT=10000"
       - "GPT-SERVICE_HTTP-CLIENT_CONNECT-TIMEOUT=10000"
       - "GPT-SERVICE_URLS_BASE-URL=http://gpt-service-1:8095/gptclient"
@@ -68,8 +68,8 @@ services:
       - "SOCKET_SERVER_PORT=8085"
       - "SOCKET_SERVER_HOST=0.0.0.0"
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
-      - "SPRING_DATASOURCE_USERNAME=postgres"
-      - "SPRING_DATASOURCE_PASSWORD=postgres"
+      - "SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}"
+      - "SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}"
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     networks:
@@ -84,8 +84,9 @@ services:
     environment:
       - "SERVER_PORT=8095"
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
-      - "SPRING_DATASOURCE_USERNAME=postgres"
-      - "SPRING_DATASOURCE_PASSWORD=postgres"
+      - "SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}"
+      - "SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}"
+      - "OPENAI-SERVICE_API-KEY=${OPENAI_API_KEY}"
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     networks:
