@@ -8,8 +8,8 @@ openai-service:
   gpt-model: gpt-3.5-turbo
   audio-model: whisper-1
   http-client:
-    read-timeout: 60000
-    connect-timeout: 60000
+    read-timeout: 180000
+    connect-timeout: 180000
   urls:
     base-url-v1: https://api.openai.com/v1
     chat-url-v1: /chat/completions
@@ -36,8 +36,8 @@ spring:
       client:
         config:
           default:
-            connectTimeout: 60000 # 1 min
-            readTimeout: 60000 # 1 min
+            connectTimeout: 180000 # 3 min
+            readTimeout: 180000 # 3 min
 
 management:
   endpoints:

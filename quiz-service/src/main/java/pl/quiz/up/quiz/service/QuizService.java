@@ -3,6 +3,7 @@ package pl.quiz.up.quiz.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import pl.quiz.up.quiz.client.GPTServiceClient;
 import pl.quiz.up.quiz.dto.QuizFullAnswerWriteDto;
 import pl.quiz.up.quiz.dto.QuizFullQuestionWithAnswersWriteDto;
 import pl.quiz.up.quiz.dto.QuizFullWriteDto;
+import pl.quiz.up.quiz.dto.request.QuizFromTextGenerationDto;
 import pl.quiz.up.quiz.dto.request.QuizFromTitleGenerationDto;
 import pl.quiz.up.quiz.dto.response.CategoriesDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
@@ -28,10 +30,12 @@ import pl.quiz.up.quiz.exception.QuizGenerationException;
 import pl.quiz.up.quiz.repository.SqlQuizAnswerRepository;
 import pl.quiz.up.quiz.repository.facade.*;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -83,50 +87,64 @@ public class QuizService {
         }
     }
 
-    public QuizDto generateQuizFromTitle(final Long requestorId, QuizFromTitleGenerationDto dto) {
+    @Transactional
+    public QuizDto generateQuizFromTitle(String authToken, final Long requestorId, QuizFromTitleGenerationDto dto) {
 
         if(!quizRepository.existsByTitle(dto.getTitle())) {
 
-            ResponseEntity<String> resp = gptServiceClient.generateQuizFromTitle(dto);
+            ResponseEntity<String> resp =
+                    gptServiceClient.generateQuizFromTitle(authToken, dto);
 
             if(resp.getStatusCode() == HttpStatus.OK) {
                 JsonNode jsonNode =
                     parseJson(resp.getBody()).orElseThrow(() ->
                         new QuizGenerationException(String.format("Quiz '%s' generation fail. Please try again in a while", dto.getTitle())));
 
-                Map<String, QuizFullQuestionWithAnswersWriteDto> questions =
-                        IntStream.range(0, dto.getNumberOfQuestions())
-                            .boxed()
-                            .collect(Collectors.toMap(
-                                    i -> String.valueOf(i + 1),
-                                    i -> generateQuestion(jsonNode.deepCopy(), dto.getAnswersPerQuestion()),
-                                    (existing, replacement) -> replacement
-                            ));
-
-                QuizFullWriteDto quiz =
-                        QuizFullWriteDto.builder()
-                            .title(jsonNode.get("title").asText())
-                            .summary(jsonNode.get("summary").asText())
-                            .description(jsonNode.get("description").asText())
-                            .type(dto.getType())
-                            .categoryId(dto.getCategoryId())
-                            .publicAvailable(dto.getPublicAvailable())
-                            .quizTime(dto.getQuizTime())
-                            .startsAt(dto.getStartsAt())
-                            .endsAt(dto.getEndsAt())
-                            .quizQuestionsWithAnswersEntities(questions)
-                            .build();
-
-                long id = saveQuiz(requestorId, quiz).getQuizId();
-
-                return quizRepository.findQuiz(requestorId, id) // TODO -> change it to a more efficient solution
-                        .orElseThrow(() -> new NotFoundException("Quiz not found with id: " + id));
-
+                return createQuizDto(
+                        requestorId,
+                        resp.getBody(),
+                        jsonNode.deepCopy(),
+                        dto.getNumberOfQuestions(),
+                        dto.getAnswersPerQuestion(),
+                        dto.getType(),
+                        dto.getCategoryId(),
+                        dto.getPublicAvailable(),
+                        dto.getQuizTime(),
+                        dto.getStartsAt(),
+                        dto.getEndsAt());
             } else {
                 throw new QuizGenerationException(String.format("Quiz '%s' generation fail. Please try again in a while", dto.getTitle()));
             }
         } else {
             throw new AlreadyExistsException(String.format("Quiz with name '%s' already exists", dto.getTitle()));
+        }
+    }
+
+    @Transactional
+    public QuizDto generateQuizFromText(String authToken, final Long requestorId, QuizFromTextGenerationDto dto) {
+
+        ResponseEntity<String> resp =
+                gptServiceClient.generateQuizFromText(authToken, dto);
+
+        if(resp.getStatusCode() == HttpStatus.OK) {
+            JsonNode jsonNode =
+                    parseJson(resp.getBody()).orElseThrow(() ->
+                            new QuizGenerationException(String.format("Quiz from text '%s' generation fail. Please try again in a while", dto.getText())));
+
+            return createQuizDto(
+                    requestorId,
+                    resp.getBody(),
+                    jsonNode.deepCopy(),
+                    dto.getNumberOfQuestions(),
+                    dto.getAnswersPerQuestion(),
+                    dto.getType(),
+                    dto.getCategoryId(),
+                    dto.getPublicAvailable(),
+                    dto.getQuizTime(),
+                    dto.getStartsAt(),
+                    dto.getEndsAt());
+        } else {
+            throw new QuizGenerationException(String.format("Quiz from text '%s' generation fail. Please try again in a while", dto.getText()));
         }
     }
 
@@ -281,20 +299,67 @@ public class QuizService {
         return savedQuiz;
     }
 
-    private static QuizFullQuestionWithAnswersWriteDto generateQuestion(JsonNode rootNode, int answersPerQuestionNumber) {
+    private QuizDto createQuizDto(
+            final Long requestorId,
+            final String bodyResp,
+            final JsonNode jsonNode,
+            final int numberOfQuestions,
+            final int answersPerQuestion,
+            final Long type,
+            final Long categoryId,
+            final Boolean publicAvailable,
+            final Long quizTime,
+            final Timestamp startsAt,
+            final Timestamp endsAt) {
 
+        log.info("Quiz generation request success for requestor with ID = `{}`. Generated quiz content:\n{}",
+                String.valueOf(requestorId),
+                bodyResp);
+
+        Map<String, QuizFullQuestionWithAnswersWriteDto> questions =
+                IntStream.range(1, numberOfQuestions + 1)
+                        .boxed()
+                        .collect(Collectors.toMap(
+                                i -> "q" + i,
+                                i -> generateQuestion(
+                                        jsonNode.path("quizQuestionsWithAnswersEntities").path("q" + i),
+                                        answersPerQuestion),
+                                (existing, replacement) -> replacement
+                        ));
+
+        QuizFullWriteDto quiz =
+                QuizFullWriteDto.builder()
+                        .title(jsonNode.get("title").asText())
+                        .summary(jsonNode.get("summary").asText())
+                        .description(jsonNode.get("description").asText())
+                        .type(type)
+                        .categoryId(categoryId)
+                        .publicAvailable(publicAvailable)
+                        .quizTime(quizTime)
+                        .startsAt(startsAt)
+                        .endsAt(endsAt)
+                        .quizQuestionsWithAnswersEntities(questions)
+                        .build();
+
+        long id = saveQuiz(requestorId, quiz).getQuizId();
+
+        return quizRepository.findQuiz(requestorId, id) // TODO -> change it to a more efficient solution
+                .orElseThrow(() -> new NotFoundException("Quiz not found with id: " + id));
+    }
+
+    private static QuizFullQuestionWithAnswersWriteDto generateQuestion(JsonNode questionNode, int answersPerQuestionNumber) {
         Set<QuizFullAnswerWriteDto> answers = IntStream.range(0, answersPerQuestionNumber)
-                .mapToObj(i -> generateAnswer(rootNode.path("questionAnswersEntities").get(i)))
+                .mapToObj(i -> generateAnswer(questionNode.path("questionAnswersEntities").get(i)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         return QuizFullQuestionWithAnswersWriteDto.builder()
-                .type(rootNode.path("type").asText())
-                .question(rootNode.path("question").asText())
-                .questionImage(rootNode.path("questionImage").asText())
-                .score((short) rootNode.path("score").asInt())
-                .difficultyLevel((short) rootNode.path("difficultyLevel").asInt())
-                .visibleInQuiz(rootNode.path("visibleInQuiz").asBoolean())
+                .type(questionNode.path("type").asText())
+                .question(questionNode.path("question").asText())
+                .questionImage(questionNode.path("questionImage").asText())
+                .score((short) questionNode.path("score").asInt())
+                .difficultyLevel((short) questionNode.path("difficultyLevel").asInt())
+                .visibleInQuiz(questionNode.path("visibleInQuiz").asBoolean())
                 .questionAnswersEntities(answers)
                 .build();
     }

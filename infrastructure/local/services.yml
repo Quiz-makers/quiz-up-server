@@ -25,8 +25,8 @@ services:
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
       - "SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}"
       - "SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}"
-      - "GPT-SERVICE_HTTP-CLIENT_READ-TIMEOUT=10000"
-      - "GPT-SERVICE_HTTP-CLIENT_CONNECT-TIMEOUT=10000"
+      - "GPT-SERVICE_HTTP-CLIENT_READ-TIMEOUT=180000"
+      - "GPT-SERVICE_HTTP-CLIENT_CONNECT-TIMEOUT=180000"
       - "GPT-SERVICE_URLS_BASE-URL=http://gpt-service-1:8095/gptclient"
       - "GPT-SERVICE_URLS_GENERATE-BY-TITLE=/api/v1/quiz/generate/fromTitle"
       - "GPT-SERVICE_URLS_GENERATE-BY-TEXT=/api/v1/quiz/generate/fromText"
@@ -57,8 +57,6 @@ services:
       - ${GLOBAL_NETWORK:-services}
   battle-service-1:
     image: ${GROUP_ID}/battle.service:${BATTLE_SERVICE_VERSION:-latest}
-    ports:
-      - "8085:8085"
     user: root
     depends_on:
       postgres_db:
@@ -87,6 +85,8 @@ services:
       - "SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}"
       - "SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}"
       - "OPENAI-SERVICE_API-KEY=${OPENAI_API_KEY}"
+      - "OPENAI-SERVICE_HTTP-CLIENT_READ-TIMEOUT=180000"
+      - "OPENAI-SERVICE_HTTP-CLIENT_CONNECT-TIMEOUT=180000"
     volumes:
       - "./scripts/check-auth-server-started.sh:/usr/local/bin/check-auth-server-started.sh"
     networks:
