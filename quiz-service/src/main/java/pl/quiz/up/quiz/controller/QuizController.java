@@ -1,9 +1,12 @@
 package pl.quiz.up.quiz.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.quiz.up.common.annotation.UserAuthority;
@@ -11,6 +14,8 @@ import pl.quiz.up.common.mapper.DTO;
 import pl.quiz.up.common.utils.AuthenticationUtils;
 import pl.quiz.up.quiz.dto.QuizFullWriteDto;
 import pl.quiz.up.quiz.dto.QuizRawWriteDto;
+import pl.quiz.up.quiz.dto.request.QuizFromTextGenerationDto;
+import pl.quiz.up.quiz.dto.request.QuizFromTitleGenerationDto;
 import pl.quiz.up.quiz.dto.response.CategoriesDto;
 import pl.quiz.up.quiz.dto.response.QuizDto;
 import pl.quiz.up.quiz.dto.response.QuizTypesDto;
@@ -43,6 +48,26 @@ public class QuizController {
     public void publishRawQuiz(@DTO(QuizRawWriteDto.class) QuizEntity quiz) {
 
         quizService.publishRawQuiz(AuthenticationUtils.getUserId(), quiz);
+    }
+
+    @UserAuthority
+    @PostMapping(value = "/generate/fromTitle", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuizDto> generateQuizFromTitle(HttpServletRequest req, @RequestBody @Valid QuizFromTitleGenerationDto dto) {
+        return ResponseEntity.ok(
+                quizService.generateQuizFromTitle(
+                        req.getHeader(HttpHeaders.AUTHORIZATION),
+                        AuthenticationUtils.getUserId(),
+                        dto));
+    }
+
+    @UserAuthority
+    @PostMapping(value = "/generate/fromText", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuizDto> generateQuizFromText(HttpServletRequest req, @RequestBody @Valid QuizFromTextGenerationDto dto) {
+        return ResponseEntity.ok(
+                quizService.generateQuizFromText(
+                        req.getHeader(HttpHeaders.AUTHORIZATION),
+                        AuthenticationUtils.getUserId(),
+                        dto));
     }
 
     @UserAuthority

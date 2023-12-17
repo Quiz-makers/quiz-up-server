@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.quiz.up.common.messages.Messages;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class QuizFullQuestionWithAnswersWriteDto {
 
     @NotBlank(message = Messages.EMPTY_FIELD)

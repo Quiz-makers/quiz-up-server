@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
+@EnableFeignClients
 @SpringBootApplication(scanBasePackages = {"pl.quiz.up.quiz.*", "pl.quiz.up.common.*"})
 @EntityScan(basePackages = {"pl.quiz.up.quiz.*", "pl.quiz.up.common.*"})
 @OpenAPIDefinition(
