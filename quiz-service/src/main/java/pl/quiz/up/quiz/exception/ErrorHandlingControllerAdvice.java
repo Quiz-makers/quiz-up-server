@@ -89,7 +89,7 @@ public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<ValidationErrorList> onRuntimeException(RuntimeException e) {
-        e.printStackTrace(); // TODO -> REMOVE IT after debugging
+
         ValidationErrorList errorList =
                 ValidationErrorList.of("message", MessagesEnum.INTERNAL_SERVER_ERROR);
 
