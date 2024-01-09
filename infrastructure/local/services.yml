@@ -19,7 +19,7 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
-#    entrypoint: ['check-auth-server-started.sh']
+    #    entrypoint: ['check-auth-server-started.sh']
     environment:
       - "SERVER_PORT=8290"
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/quiz_db"
@@ -57,6 +57,8 @@ services:
       - ${GLOBAL_NETWORK:-services}
   battle-service-1:
     image: ${GROUP_ID}/battle.service:${BATTLE_SERVICE_VERSION:-latest}
+    ports:
+      - "8085:8085"
     user: root
     depends_on:
       postgres_db:
